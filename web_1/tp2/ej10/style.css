@@ -1,0 +1,52 @@
+#img{
+    object-fit:contain;
+    width: 500px;
+    height: 300px;
+}
+
+.div-img{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 1rem;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 1rem;
+    margin: 1rem;
+    border-radius: 10px;
+}
+
+.formulario{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: .5rem;
+}
+
+#premio{
+    font-size: 2em;
+    font-weight: 500;
+}
+
+.gano{
+    background-color: tomato;
+}
+
+.perdio{
+    background-color: grey;
+}
+
+#btn{
+    background-color: bisque;
+    border: 1px solid black;
+    padding: .5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#btn:hover{
+    scale: 1.1em;
+    box-shadow: 2px 2px 2px black;
+}

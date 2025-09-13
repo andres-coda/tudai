@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Tp2 Ej10</title>
+</head>
+
+<body>
+  <p>
+    Hacer un juego donde se pueda mostrar en una página una imagen de manera aleatoria y se debe adivinar a que se
+    refiere la imagen. Pueden ser 5 imágenes de animales distintos y mediante un input el usuario debe ingresar el
+    nombre del animal. Se debe mostrar si acertó o no.
+    Para convertir una cadena de texto a minúscula se puede ayudar del siguiente código
+    let cadena = "MAYUSCULA";
+    cadena = cadena.toLowerCase();
+    console.log(cadena);
+  </p>
+  
+  <button id="btn">Actualizar imagen</button>
+  <div class="div-img">
+    <h1>Adivina el animal</h1>
+    <img id='img' alt="Adivine el animal" src="asset/descarga0.jfif"/>
+    <form class="formulario">
+      <label for="nombre">Adivina el nombre</label>
+      <input id="nombre" name="nombre" placeholder="adivina el nombre" type="text"/>
+      <input id="submit" type="submit"/>
+    </form>
+    <p id="premio"></p>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
