@@ -173,16 +173,16 @@ const proveedores = [
 ];
 
 const rubros = [
-  { id: '01', rubro: 'Verduras de hoja' },
-  { id: '02', rubro: 'Verduras de fruto' },
-  { id: '03', rubro: 'Verduras de raíz' },
-  { id: '04', rubro: 'Frutas cítricas' },
-  { id: '05', rubro: 'Frutas de carozo' },
-  { id: '06', rubro: 'Frutas tropicales' },
-  { id: '07', rubro: 'Tubérculos' },
-  { id: '08', rubro: 'Legumbres' },
-  { id: '09', rubro: 'Frutas del bosque' },
-  { id: '10', rubro: 'Hierbas aromáticas' }
+  { id: '01', nombre: 'Verduras de hoja' },
+  { id: '02', nombre: 'Verduras de fruto' },
+  { id: '03', nombre: 'Verduras de raíz' },
+  { id: '04', nombre: 'Frutas cítricas' },
+  { id: '05', nombre: 'Frutas de carozo' },
+  { id: '06', nombre: 'Frutas tropicales' },
+  { id: '07', nombre: 'Tubérculos' },
+  { id: '08', nombre: 'Legumbres' },
+  { id: '09', nombre: 'Frutas del bosque' },
+  { id: '10', nombre: 'Hierbas aromáticas' }
 ];
 
 const productos = [

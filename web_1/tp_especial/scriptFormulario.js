@@ -4,13 +4,13 @@ const titulo = document.querySelector('#titulo')
 const botonera = document.querySelector('.botonera');
 const guardar = document.querySelector('.btn-guardar')
 
-const crearInput = (textLabel, nombre, requerido) => {
+const crearInput = (textLabel, nombre, requerido, tipo) => {
   const div = document.createElement('div');
   const label = document.createElement('label');
   const input = document.createElement('input');
   input.id = nombre;
   input.name = nombre;
-  input.type = 'text';
+  input.type = tipo ? tipo : 'text';
   input.value = '';
   input.required = requerido;
   label.htmlFor = nombre;
@@ -19,6 +19,19 @@ const crearInput = (textLabel, nombre, requerido) => {
   div.appendChild(label);
   div.appendChild(input);
   formulario.insertBefore(div, botonera);
+  return input;
+}
+
+const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
+  const input = crearInput(textLabel, nombre, requerido, 'select');
+  arraySelec.forEach(elemento =>{
+    const opcion = document.createElement('option');
+    opcion.id=elemento.id;
+    opcion.textContent = elemento.nombre;
+    opcion.value=elemento.id;
+    input.appendChild(opcion);
+  });
+
 }
 
 const nuevoProeveedor = () => {
@@ -27,9 +40,18 @@ const nuevoProeveedor = () => {
   crearInput('Telefono: ', 'telefono', true);
 }
 
+const nuevoProducto = () => {
+  titulo.textContent = 'Nuevo producto';
+  crearInput('Nombre del producto: ', 'nombre', true);
+  crearSelec('Rubro: ', 'rubro', rubros, false);
+}
+
 switch (tipo) {
   case 'proveedores':
     nuevoProeveedor();
+    break;
+  case 'productos':
+    nuevoProducto();
     break;
   default: console.log('no hay tipo')
 }
@@ -62,6 +84,8 @@ const guardarRegistro = () => {
     guardarProveedor();
     break;
   default: console.log('no hay tipo')
+  break;
+  
 }
 }
 
