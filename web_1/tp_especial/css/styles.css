@@ -8,6 +8,7 @@ body{
   background-color: beige;
   box-sizing: border-box;
   overflow: hidden;
+  max-height: 100vh;
 }
 nav{
   margin: 0;
@@ -21,7 +22,10 @@ nav{
   color: white;
 }
 
+
 a{
+  text-decoration: none;
+  color: inherit;
   font-size: large;
   padding: .5rem;
   flex: 1;
@@ -30,13 +34,21 @@ a{
   text-align: center;
 }
 
+a:hover, a:visited, a:focus, a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
 a:hover, a:focus{
   scale: 1.1;
   border: none;
   background-color: #836628;
   color: black;
 }
-
+a:active{
+  background-color: #90763e;
+  color: black;
+}
 table{
   width: 100%;
   border: 2px solid black;
@@ -81,15 +93,23 @@ button:hover{
   scale: 1.1;
 }
 
+
+.agregar{
+  position: absolute;
+  top:50%;
+  translate: 0 -20px;
+  right: 2rem;
+}
+
 .contenedor{
   display: flex;
   flex-direction: column;
   width: 100%;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   padding: 1rem;
   box-sizing: border-box;
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-width:thin;
 }
 
@@ -103,63 +123,4 @@ button:hover{
   box-sizing: border-box;
 }
 
-.agregar{
-  position: absolute;
-  top:50%;
-  translate: 0 -20px;
-  right: 2rem;
-}
 
-form{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  width: 80vw;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-input, label{
-  width: 100%;
-}
-
-.btn-guardar, .btn-atras{
-  border-radius: 20px;
-  padding: 0 1rem;
-  font-size: large;
-  flex: 1;
-}
-
-.btn-atras{
-  background-color: gainsboro;
-  color: black;
-}
-
-.botonera{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-  gap: 2rem;
-}
-
-input{
-  height: 40px;
-}
-
-.div-input {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-@media(max-width:600px){
-  .div-input {
-  gap:.2rem;
-  flex-direction: column;
-  }
-}

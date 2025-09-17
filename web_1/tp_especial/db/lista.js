@@ -1,6 +1,4 @@
 
-let tipo = 'proveedores'
-
 const lista = [
   {
     id: '00',
@@ -98,77 +96,122 @@ const proveedores = [
   {
     id: '00',
     nombre: "María González",
-    telefono: "011-4567-8901"
+    telefono: "011-4567-8901",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '01',
     nombre: "Carlos Rodríguez",
-    telefono: "011-4567-8902"
+    telefono: "011-4567-8902",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '02',
     nombre: "Ana López",
-    telefono: "011-4567-8903"
+    telefono: "011-4567-8903",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '03',
     nombre: "Luis Martínez",
-    telefono: "011-4567-8904"
+    telefono: "011-4567-8904",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '04',
     nombre: "Sofia Herrera",
-    telefono: "011-4567-8905"
+    telefono: "011-4567-8905",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '05',
     nombre: "Diego Fernández",
-    telefono: "011-4567-8906"
+    telefono: "011-4567-8906",
+    productos:[
+      '001','036'
+    ]
   },
   {
     id: '06',
     nombre: "Lucía Morales",
-    telefono: "011-4567-8907"
+    telefono: "011-4567-8907",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '07',
     nombre: "Roberto Silva",
-    telefono: "011-4567-8908"
+    telefono: "011-4567-8908",
+    productos:[
+      '001', '011'
+    ]
   },
   {
     id: '08',
     nombre: "Carmen Jiménez",
-    telefono: "011-4567-8909"
+    telefono: "011-4567-8909",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '09',
     nombre: "Fernando Castro",
-    telefono: "011-4567-8910"
+    telefono: "011-4567-8910",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '10',
     nombre: "Valeria Ruiz",
-    telefono: "011-4567-8911"
+    telefono: "011-4567-8911",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '11',
     nombre: "Alejandro Vargas",
-    telefono: "011-4567-8912"
+    telefono: "011-4567-8912",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '12',
     nombre: "Isabella Torres",
-    telefono: "011-4567-8913"
+    telefono: "011-4567-8913",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '13',
     nombre: "Mateo Ramírez",
-    telefono: "011-4567-8914"
+    telefono: "011-4567-8914",
+    productos:[
+      '001', '011', '022','036'
+    ]
   },
   {
     id: '14',
     nombre: "Camila Mendoza",
-    telefono: "011-4567-8915"
+    telefono: "011-4567-8915",
+    productos:[
+      '001', '011', '022','036'
+    ]
   }
 ];
 

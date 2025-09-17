@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/stylesFormulario.css" />
   <title>Lista</title>
 </head>
-
 <body>
   <nav>
     <a id="proveedores" class="enlace" href="proveedores.html">Proveedores</a>
@@ -16,21 +13,20 @@
     <a id="productos" class="enlace" href="productos.html">Productos</a>
     <a id="listas" class="enlace" href="listas.html">Lista</a>
   </nav>
-  <form>
-    <h1 id="titulo"></h1>
-    <div class="botonera">
-      <button class="btn-atras">Atras</button>
-      <button class="btn-guardar">Guardar</button>
-    </div>
-  </form>
-  <div class="modal no-visible">
-    <div id="modal-interno">
-      <button id="btn-cerrar">x</button>
-      <div id="modal-contenido"></div>
-    </div>
+  <div class="cabecera">
+    <h1 id="titulo">Proveedores</h1>
+    <button id="nuevaLista" class="agregar">+</button>
+  </div>
+  <div class="contenedor">
+    <table id="tabla">
+      <thead>
+      </thead>
+        <tbody>
+      </tbody>
+    </table>
   </div>
   <script src="db/lista.js"></script>
-  <script src="js/scriptFormulario.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/proveedores.js"></script>
 </body>
-
 </html>

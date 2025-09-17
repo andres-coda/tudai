@@ -1,0 +1,37 @@
+const thead = document.querySelector('#tabla thead');
+const tbody = document.querySelector('#tabla tbody');
+const agregar = document.querySelector('#nuevaLista');
+const titulo = document.querySelector('#titulo');
+
+const crearTituloTabla = (titulos) =>{
+   thead.innerHTML = '';
+   const filaTitulo = document.createElement('tr');
+   titulos.forEach(titulo => {
+      const th = document.createElement('th');
+      th.textContent = titulo;
+      filaTitulo.appendChild(th);
+   });   
+   thead.appendChild(filaTitulo);
+}
+
+const listaSeleccion = (idElemento) => {
+   lista.map(p => {
+      if (p.id === idElemento) {
+         console.log(p.proveedor);
+         return
+      }
+   })
+}
+
+const tr = document.querySelectorAll('tr');
+tr.forEach(elemento => {
+   elemento.addEventListener('click', function () {
+      listaSeleccion(elemento.id)
+   });
+})
+
+
+const navegar = (tipo) => {
+   sessionStorage.setItem('tipo', tipo);
+   window.location.href = 'formulario.html';
+}
