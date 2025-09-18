@@ -49,23 +49,27 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
 
 const crearCheckBox = (textLabel, nombre, listaElementos) => {
   const div = document.createElement('div');
+  div.classList.add('div-check')
+  const ul = document.createElement('ul');
   const labelTitulo = document.createElement('label');
   labelTitulo.textContent = textLabel;
   labelTitulo.htmlFor = nombre;
-  div.classList.add('div-checkbox');
-  div.appendChild(labelTitulo);
+  ul.classList.add('ul-checkbox');
   listaElementos.forEach(elemento=>{
-    const nuevoDiv = document.createElement('div');
+    const li = document.createElement('li');
     const input = document.createElement('input');    
     const label = document.createElement('label'); 
-    nuevoDiv.classList.add('div-input');   
+    input.classList.add('input-check')
+    li.classList.add('li-input-check');   
     input.type = 'checkbox';
     datosInput(input, label, elemento.nombre, nombre, false);
     input.value = elemento.id;
-    nuevoDiv.appendChild(label);
-    nuevoDiv.appendChild(input);
-    div.appendChild(nuevoDiv);
+    li.appendChild(label);
+    li.appendChild(input);
+    ul.appendChild(li);
   });
+  div.appendChild(labelTitulo);
+  div.appendChild(ul);
   formulario.insertBefore(div, botonera);
 }
 

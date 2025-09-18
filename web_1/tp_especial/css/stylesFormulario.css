@@ -34,12 +34,13 @@
 form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 1rem;
   width: 80vw;
   padding: 1rem;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -100,14 +101,49 @@ select {
   width: 100%;
 }
 
-.div-checkbox{
-  display: grid;
-  color: black;
+.input-check{
+  max-width: 20px;
+  max-height: 20px;
 }
+
+.div-check{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  margin: .5rem;
+}
+
+.li-input-check {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .2rem;
+}
+
+.ul-checkbox{
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  width: 100%;
+  color: black;
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+@media(max-width:750px) {
+  form {
+     width: 95vw;
+  }
+}
+
 
 @media(max-width:600px) {
   .div-input {
     gap: .2rem;
     flex-direction: column;
   }
-}
+  }

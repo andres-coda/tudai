@@ -17,7 +17,6 @@ const crearTituloTabla = (titulos) =>{
 const listaSeleccion = (idElemento) => {
    lista.map(p => {
       if (p.id === idElemento) {
-         console.log(p.proveedor);
          return
       }
    })

@@ -22,7 +22,6 @@ const mostrarProductos = () => {
             nombresProveedores.push(prov.nombre);
          }
       });
-      console.log('producto ',nombresProveedores)
       proveedor.textContent = nombresProveedores.join(', ');
    })
 }
