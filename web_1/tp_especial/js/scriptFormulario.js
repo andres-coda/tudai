@@ -158,7 +158,7 @@ const guardarRegistro = () => {
   default: console.log('no hay tipo')
   break;
   
-}
+} 
 }
 
 guardar.addEventListener('click', function (e) {
