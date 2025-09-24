@@ -116,10 +116,21 @@ const selecId = (array) => {
 const guardarProveedor = () => {
   const nombre = document.querySelector('#nombre').value;
   const telefono = document.querySelector('#telefono').value;
+  
+  const verificado = verificarProducto(nombre, telefono);
+  if (verificado) { 
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
+
+  const productos = document.querySelectorAll('.input-check:checked');
+  const productosIds = Array.from(productos).map(checkbox => checkbox.value);
+
   const nuevoPorveedor = {
     id: selecId(proveedores),
     nombre: nombre,
-    telefono: telefono
+    telefono: telefono,
+    productos:productosIds,
   }
   proveedores.push(nuevoPorveedor);
   return nuevoPorveedor;
@@ -128,6 +139,11 @@ const guardarProveedor = () => {
 const guardarProducto = () => {
   const nombre = document.querySelector('#nombre').value;
   const rubro = document.querySelector('#rubro').value;
+  const verificado = verificarProducto(nombre, rubro);
+  if (verificado) { 
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
   const nuevoProducto = {
     id: selecId(productos),
     nombre: nombre,
@@ -137,9 +153,9 @@ const guardarProducto = () => {
   return nuevoProducto;
 }
 
-const efectoModal=(categoria, nombre)=>{
+const efectoModal=(newTexto)=>{
   const texto = document.createElement('p');
-  texto.textContent = `Se creó ${categoria} ${nombre} correctamente`;
+  texto.textContent = newTexto;
   modalInterno.innerHTML = '';
   modalInterno.appendChild(texto)
 }
@@ -149,11 +165,12 @@ const guardarRegistro = () => {
   switch (tipo) {
   case 'proveedores':
     const nuevoProveedor = guardarProveedor();
-    efectoModal('el proveedor', nuevoProveedor.nombre);
+    efectoModal(`Se creó el proveedor ${nuevoProveedor.nombre} correctamente`);
+    console.log('Productos ', nuevoProveedor.productos)
     break;
   case 'productos':
     const nuevoProducto = guardarProducto();
-    efectoModal('el producto', nuevoProducto.nombre);
+    efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
     break;
   default: console.log('no hay tipo')
   break;
