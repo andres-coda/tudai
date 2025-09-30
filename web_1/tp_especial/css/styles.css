@@ -84,7 +84,26 @@ table td{
   padding: 5px;
   box-sizing: border-box;
 }
-
+ul {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 .5rem;
+  box-sizing: border-box;
+}
+li{
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 1px 1px 1px black;
+  border-radius: 5px;
+  padding: .2rem .5rem;
+  text-align: center;
+}
 button{
   background-color: #11461d;
   color: white;

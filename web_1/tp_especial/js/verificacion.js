@@ -13,3 +13,15 @@ const verificarProveedor = (nombre, telefono) => {
   if (numero.length < 10 || numero.length >15) 'El número debe tener entre 10 y 15 caracteres';
   return null;
 }
+
+const verificarRubro = (nombre) => {
+  if (!nombre) return 'El rubro requiere nombre';
+  if (nombre.length < 2 || nombre.length > 50) return 'El nombre del rubro debe tener entre 2 y 50 caracteres';
+  return null;
+}
+
+const verificarLista = (fecha, proveedor) => {
+  if (!fecha) return 'La lista requiere fecha';
+  if (!proveedor) return 'La lista requiere proveedor';
+  return null;
+}

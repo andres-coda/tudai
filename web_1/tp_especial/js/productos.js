@@ -26,7 +26,10 @@ const mostrarProductos = () => {
    })
 }
 
-mostrarProductos();
-
-agregar.addEventListener('click', ()=> navegar('productos'))
-
+if(sessionStorage.getItem('tipo') === 'productos') {
+   
+   mostrarProductos();
+   
+   agregar.addEventListener('click', ()=> navegar('productos'))
+   
+} ;

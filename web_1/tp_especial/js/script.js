@@ -2,6 +2,9 @@ const thead = document.querySelector('#tabla thead');
 const tbody = document.querySelector('#tabla tbody');
 const agregar = document.querySelector('#nuevaLista');
 const titulo = document.querySelector('#titulo');
+const provederesNav = document.querySelector('#proveedores');
+const productosNav = document.querySelector('#productos');
+const listasNav = document.querySelector('#listas');
 
 const crearTituloTabla = (titulos) =>{
    thead.innerHTML = '';
@@ -34,3 +37,15 @@ const navegar = (tipo) => {
    sessionStorage.setItem('tipo', tipo);
    window.location.href = 'formulario.html';
 }
+
+provederesNav.addEventListener('click', function (){
+   sessionStorage.setItem('tipo', 'proveedores');
+})
+
+productosNav.addEventListener('click', function (){
+   sessionStorage.setItem('tipo', 'productos');
+})
+
+listasNav.addEventListener('click', function (){
+   sessionStorage.setItem('tipo', 'listas');
+})

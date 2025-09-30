@@ -15,6 +15,8 @@ const mostrarProveedores = () => {
    })
 }
 
+if(sessionStorage.getItem('tipo') === 'proveedores') {
 mostrarProveedores();
 
 agregar.addEventListener('click', ()=> navegar('proveedores'))
+}

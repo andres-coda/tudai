@@ -1,17 +1,18 @@
+const listaRubro = document.querySelector('#lista');
+
 const mostrarRubros = () => {
    titulo.textContent = 'Lista de rubros'
-   const titulos = ['Nombre'];
-   crearTituloTabla(titulos);
 
    rubros.forEach(p => {
-      const fila = tbody.insertRow();
-      fila.id = p.id;
-
-      const nombre = fila.insertCell();
-      nombre.textContent = p.nombre;
+      const elemento = document.createElement('li');
+      elemento.id = p.id;
+      elemento.textContent = p.nombre;
+      listaRubro.appendChild(elemento);
    })
 }
 
 mostrarRubros();
 
-agregar.addEventListener('click', ()=> navegar('rubros'))
+agregar.addEventListener('click', function() {
+   navegar('rubros')
+})

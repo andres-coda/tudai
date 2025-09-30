@@ -17,11 +17,11 @@ const datosInput = (input, label, textLabel, nombre, requerido) =>{
   label.textContent = textLabel;
 }
 
-const crearInput = (textLabel, nombre, requerido) => {
+const crearInput = (textLabel, nombre, requerido, tipo) => {
   const div = document.createElement('div');
   const label = document.createElement('label');
   const input = document.createElement('input');
-  input.type = 'text';
+  input.type = tipo || 'text';
   datosInput(input, label, textLabel, nombre, requerido);
   div.classList.add('div-input');
   div.appendChild(label);
@@ -91,6 +91,12 @@ const nuevoRubro = () => {
   crearInput('Nombre del rubro: ', 'nombre', true);
 }
 
+const nuevaLista = () => {
+  titulo.textContent = 'Nueva lista';
+  crearInput('Fecha: ', 'fecha', true, 'date');
+  crearSelec('Proveedor: ', 'proveedor', proveedores, true);
+}
+
 switch (tipo) {
   case 'proveedores':
     nuevoProeveedor();
@@ -99,6 +105,10 @@ switch (tipo) {
     nuevoProducto();
     break;
   case 'rubros':
+    nuevoRubro();
+    break;
+  case 'listas':
+    nuevaLista();
     break;
   default: console.log('no hay tipo')
 }
@@ -153,11 +163,44 @@ const guardarProducto = () => {
   return nuevoProducto;
 }
 
+const guardarRubro = () => {
+  const nombre = document.querySelector('#nombre').value;
+  const verificado = verificarRubro(nombre);
+  if (verificado) { 
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
+  const nuevoRubro = {
+    id: selecId(productos),
+    nombre: nombre,
+  }
+  rubros.push(nuevoRubro);
+  return nuevoRubro;
+}
+const guardarLista = () => {
+  const fecha = document.querySelector('#fecha').value;
+  const proveedor = document.querySelector('#proveedor').value;
+  const verificado = verificarLista(fecha, proveedor);
+  if (verificado) { 
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
+  const dto = {
+    proveedor,
+    fecha
+  }
+  sessionStorage.setItem('crearLista', dto);  
+  window.location.href = 'index.html';
+
+  return nuevoRubro;
+}
+
 const efectoModal=(newTexto)=>{
   const texto = document.createElement('p');
   texto.textContent = newTexto;
   modalInterno.innerHTML = '';
-  modalInterno.appendChild(texto)
+  texto.classList.add('error');
+  modalInterno.appendChild(texto);
 }
 
 const guardarRegistro = () => {
@@ -172,9 +215,16 @@ const guardarRegistro = () => {
     const nuevoProducto = guardarProducto();
     efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
     break;
-  default: console.log('no hay tipo')
-  break;
+  case 'rubros':
+    const nuevoRubro = guardarRubro();
+    efectoModal(`Se creó el rubro ${nuevoRubro.nombre} correctamente`);
+    break;
+  case 'listas':
+    guardarLista();
+    break;
   
+  default: console.log('no hay tipo')
+  break;  
 } 
 }
 

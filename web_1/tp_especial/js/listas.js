@@ -18,6 +18,9 @@ const mostrarListas = () => {
    })
 }
 
+if(sessionStorage.getItem('tipo') === 'listas') {
+
 mostrarListas();
 
 agregar.addEventListener('click', ()=> navegar('listas'))
+}

@@ -134,6 +134,10 @@ select {
   box-sizing: border-box;
 }
 
+.error{
+  color: rgb(213, 54, 26);
+}
+
 @media(max-width:750px) {
   form {
      width: 95vw;
