@@ -49,3 +49,4 @@ productosNav.addEventListener('click', function (){
 listasNav.addEventListener('click', function (){
    sessionStorage.setItem('tipo', 'listas');
 })
+

@@ -104,7 +104,8 @@ li{
   padding: .2rem .5rem;
   text-align: center;
 }
-button{
+button,
+.btn-guardar{
   background-color: #11461d;
   color: white;
   box-shadow: 2px 2px 2px black;
@@ -115,7 +116,8 @@ button{
   font-size: larger;
 }
 
-button:hover{
+button:hover,
+.btn-guardar:hover{
   scale: 1.05;
 }
 

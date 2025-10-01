@@ -26,7 +26,7 @@ const crearInput = (textLabel, nombre, requerido, tipo) => {
   div.classList.add('div-input');
   div.appendChild(label);
   div.appendChild(input);
-  formulario.insertBefore(div, botonera);
+  return div;
 }
 
 const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
@@ -44,7 +44,7 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
   div.classList.add('div-input');
   div.appendChild(label);
   div.appendChild(select);
-  formulario.insertBefore(div, botonera);
+  return div;
 }
 
 const crearCheckBox = (textLabel, nombre, listaElementos) => {
@@ -70,31 +70,32 @@ const crearCheckBox = (textLabel, nombre, listaElementos) => {
   });
   div.appendChild(labelTitulo);
   div.appendChild(ul);
-  formulario.insertBefore(div, botonera);
+  return div;
 }
 
 const nuevoProeveedor = () => {
   titulo.textContent = 'Nuevo proveedor';
-  crearInput('Nombre del proveedor: ', 'nombre', true);
-  crearInput('Telefono: ', 'telefono', true);
-  crearCheckBox('Productos: ', 'productos', productos)
+  formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true), botonera);
+  formulario.insertBefore(crearInput('Telefono: ', 'telefono', true), botonera);
+  formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos), botonera);
 }
 
 const nuevoProducto = () => {
   titulo.textContent = 'Nuevo producto';
-  crearInput('Nombre del producto: ', 'nombre', true);
-  crearSelec('Rubro: ', 'rubro', rubros, false);
+  formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true), botonera);
+  formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false), botonera);
 }
 
 const nuevoRubro = () => {
   titulo.textContent = 'Nuevo rubro';
-  crearInput('Nombre del rubro: ', 'nombre', true);
+  formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true), botonera);
+  formulario.insertBefore(crearCaptchap(crearInput), botonera);
 }
 
 const nuevaLista = () => {
   titulo.textContent = 'Nueva lista';
-  crearInput('Fecha: ', 'fecha', true, 'date');
-  crearSelec('Proveedor: ', 'proveedor', proveedores, true);
+  formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date'), botonera);
+  formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true), botonera);
 }
 
 switch (tipo) {
@@ -165,9 +166,11 @@ const guardarProducto = () => {
 
 const guardarRubro = () => {
   const nombre = document.querySelector('#nombre').value;
+  const captcha = document.querySelector('#captcha').value;
   const verificado = verificarRubro(nombre);
-  if (verificado) { 
-    efectoModal(`Error: ${verificado}`);
+  const valiCaptchap = validarCaptchap(captcha);
+  if (verificado || valiCaptchap) { 
+    efectoModal(`Error: ${verificado || valiCaptchap}`);
     return;
   }
   const nuevoRubro = {
@@ -227,10 +230,10 @@ const guardarRegistro = () => {
   break;  
 } 
 }
-
-guardar.addEventListener('click', function (e) {
+guardar.value= 'Guardar';
+formulario.addEventListener('submit', function (e) {
   e.preventDefault();
-  guardarRegistro(e)
+  guardarRegistro(e);
 })
 
 atras.addEventListener('click', function (e) {
