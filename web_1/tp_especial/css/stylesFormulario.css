@@ -10,7 +10,7 @@
 }
 
 .visble {
-  display: flex;  
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -36,6 +36,7 @@ form {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  flex: 1;
   gap: 1rem;
   width: 80vw;
   padding: 1rem;
@@ -46,12 +47,12 @@ form {
 }
 
 input,
-label, 
+label,
 select {
   width: 100%;
 }
 
-input, 
+input,
 select {
   height: 40px;
   border-radius: 10px;
@@ -79,20 +80,6 @@ select {
   right: 10px;
 }
 
-
-.btn-atras {
-  background-color: gainsboro;
-  color: black;
-}
-
-.botonera {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-  gap: 2rem;
-}
-
 .div-input {
   display: flex;
   flex-direction: row;
@@ -101,12 +88,12 @@ select {
   width: 100%;
 }
 
-.input-check{
+.input-check {
   max-width: 20px;
   max-height: 20px;
 }
 
-.div-check{
+.div-check {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -122,25 +109,45 @@ select {
   gap: .2rem;
 }
 
-.ul-checkbox{
+.ul-checkbox {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   width: 100%;
-  color: black;
-  border: 1px solid black;
   padding: 1rem;
   border-radius: 5px;
   box-sizing: border-box;
 }
 
-.error{
+.error {
   color: rgb(213, 54, 26);
+}
+
+.div-captchap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 1rem;
+}
+
+.div-captchap p {
+  border: 1px solid black;
+  border-radius: 10px;
+  font-size: 2em;
+  font-style: oblique;
+  font-weight: 700;
+  padding: 0.5rem;
+  text-decoration: line-through;
 }
 
 @media(max-width:750px) {
   form {
-     width: 95vw;
+    width: 95vw;
   }
 }
 
@@ -150,4 +157,4 @@ select {
     gap: .2rem;
     flex-direction: column;
   }
-  }
+}

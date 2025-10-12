@@ -1,0 +1,13 @@
+Andrés Coda - Tp Especial de web 1 - TUDAI - sede Las Flores
+
+Escribi en el grupo para hacer el tp en grupo, pero nadie se sumo.
+
+Realice una consulta en el foro de practicas para saber si podía utilizar sessionStorage o localStorage para poder mover información entre pantallas, y Matias
+uno de los lunes de clases, me dió a entender que podía usar lo que quisiera.
+
+Los submit de los formularios no hacen nada, solo verifican los datos, y dan el mensaje del elemento creado como especifica en uno de los puntos del tp.
+
+Al tp lo estuve haciendo en las clases de Juan, realizandole algunas consultas, y soguiendo algunos de sus consejos.
+
+
+

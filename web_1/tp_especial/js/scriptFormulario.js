@@ -8,7 +8,7 @@ const modal = document.querySelector('.modal');
 const modalInterno = document.querySelector('#modal-contenido');
 const tipo = sessionStorage.getItem('tipo') || '';
 
-const datosInput = (input, label, textLabel, nombre, requerido) =>{
+const datosInput = (input, label, textLabel, nombre, requerido) => {
   input.id = nombre;
   input.name = nombre;
   input.value = '';
@@ -34,11 +34,11 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
   const label = document.createElement('label');
   const select = document.createElement('select');
   datosInput(select, label, textLabel, nombre, requerido);
-  arraySelec.forEach(elemento =>{
+  arraySelec.forEach(elemento => {
     const opcion = document.createElement('option');
-    opcion.id=elemento.id;
+    opcion.id = elemento.id;
     opcion.textContent = elemento.nombre;
-    opcion.value=elemento.id;
+    opcion.value = elemento.id;
     select.appendChild(opcion);
   });
   div.classList.add('div-input');
@@ -55,12 +55,12 @@ const crearCheckBox = (textLabel, nombre, listaElementos) => {
   labelTitulo.textContent = textLabel;
   labelTitulo.htmlFor = nombre;
   ul.classList.add('ul-checkbox');
-  listaElementos.forEach(elemento=>{
+  listaElementos.forEach(elemento => {
     const li = document.createElement('li');
-    const input = document.createElement('input');    
-    const label = document.createElement('label'); 
+    const input = document.createElement('input');
+    const label = document.createElement('label');
     input.classList.add('input-check')
-    li.classList.add('li-input-check');   
+    li.classList.add('li-input-check');
     input.type = 'checkbox';
     datosInput(input, label, elemento.nombre, nombre, false);
     input.value = elemento.id;
@@ -76,6 +76,7 @@ const crearCheckBox = (textLabel, nombre, listaElementos) => {
 const nuevoProeveedor = () => {
   titulo.textContent = 'Nuevo proveedor';
   formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true), botonera);
+  formulario.insertBefore(crearInput('Email del proveedor: ', 'email', true, 'email'), botonera);
   formulario.insertBefore(crearInput('Telefono: ', 'telefono', true), botonera);
   formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos), botonera);
 }
@@ -84,6 +85,7 @@ const nuevoProducto = () => {
   titulo.textContent = 'Nuevo producto';
   formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true), botonera);
   formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false), botonera);
+  formulario.insertBefore(crearCaptchap(crearInput), botonera);
 }
 
 const nuevoRubro = () => {
@@ -127,9 +129,9 @@ const selecId = (array) => {
 const guardarProveedor = () => {
   const nombre = document.querySelector('#nombre').value;
   const telefono = document.querySelector('#telefono').value;
-  
+
   const verificado = verificarProducto(nombre, telefono);
-  if (verificado) { 
+  if (verificado) {
     efectoModal(`Error: ${verificado}`);
     return;
   }
@@ -141,7 +143,7 @@ const guardarProveedor = () => {
     id: selecId(proveedores),
     nombre: nombre,
     telefono: telefono,
-    productos:productosIds,
+    productos: productosIds,
   }
   proveedores.push(nuevoPorveedor);
   return nuevoPorveedor;
@@ -150,9 +152,12 @@ const guardarProveedor = () => {
 const guardarProducto = () => {
   const nombre = document.querySelector('#nombre').value;
   const rubro = document.querySelector('#rubro').value;
+  const captcha = document.querySelector('#captcha').value;
+  const valiCaptchap = validarCaptchap(captcha);
+
   const verificado = verificarProducto(nombre, rubro);
-  if (verificado) { 
-    efectoModal(`Error: ${verificado}`);
+  if (verificado || valiCaptchap) {
+    efectoModal(`Error: ${verificado || valiCaptchap}`);
     return;
   }
   const nuevoProducto = {
@@ -169,7 +174,7 @@ const guardarRubro = () => {
   const captcha = document.querySelector('#captcha').value;
   const verificado = verificarRubro(nombre);
   const valiCaptchap = validarCaptchap(captcha);
-  if (verificado || valiCaptchap) { 
+  if (verificado || valiCaptchap) {
     efectoModal(`Error: ${verificado || valiCaptchap}`);
     return;
   }
@@ -180,25 +185,27 @@ const guardarRubro = () => {
   rubros.push(nuevoRubro);
   return nuevoRubro;
 }
+
 const guardarLista = () => {
   const fecha = document.querySelector('#fecha').value;
   const proveedor = document.querySelector('#proveedor').value;
   const verificado = verificarLista(fecha, proveedor);
-  if (verificado) { 
+  if (verificado) {
     efectoModal(`Error: ${verificado}`);
     return;
   }
+
   const dto = {
     proveedor,
     fecha
   }
-  sessionStorage.setItem('crearLista', dto);  
-  window.location.href = 'index.html';
-
-  return nuevoRubro;
+  
+  formulario.reset();
+  sessionStorage.setItem('crearLista', JSON.stringify(dto));
+  navegarProductos('crearLista');
 }
 
-const efectoModal=(newTexto)=>{
+const efectoModal = (newTexto) => {
   const texto = document.createElement('p');
   texto.textContent = newTexto;
   modalInterno.innerHTML = '';
@@ -209,31 +216,39 @@ const efectoModal=(newTexto)=>{
 const guardarRegistro = () => {
   modal.classList.add('visble')
   switch (tipo) {
-  case 'proveedores':
-    const nuevoProveedor = guardarProveedor();
-    efectoModal(`Se creó el proveedor ${nuevoProveedor.nombre} correctamente`);
-    console.log('Productos ', nuevoProveedor.productos)
-    break;
-  case 'productos':
-    const nuevoProducto = guardarProducto();
-    efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
-    break;
-  case 'rubros':
-    const nuevoRubro = guardarRubro();
-    efectoModal(`Se creó el rubro ${nuevoRubro.nombre} correctamente`);
-    break;
-  case 'listas':
-    guardarLista();
-    break;
-  
-  default: console.log('no hay tipo')
-  break;  
-} 
+    case 'proveedores':
+      const nuevoProveedor = guardarProveedor();
+      if (nuevoProveedor) {
+        efectoModal(`Se creó el proveedor ${nuevoProveedor.nombre} correctamente`);
+        formulario.reset();
+      }
+      break;
+    case 'productos':
+      const nuevoProducto = guardarProducto();
+      if (nuevoProducto) {
+        efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
+        formulario.reset();
+      }
+      break;
+    case 'rubros':
+      const nuevoRubro = guardarRubro();
+      if (nuevoRubro) {
+        efectoModal(`Se creó el rubro ${nuevoRubro.nombre} correctamente`);
+        formulario.reset();
+      }
+      break;
+    case 'listas':
+      guardarLista();
+      break;
+
+    default: console.log('no hay tipo')
+      break;
+  }
 }
-guardar.value= 'Guardar';
+guardar.value = 'Guardar';
 formulario.addEventListener('submit', function (e) {
   e.preventDefault();
-  guardarRegistro(e);
+  guardarRegistro();
 })
 
 atras.addEventListener('click', function (e) {
@@ -241,4 +256,4 @@ atras.addEventListener('click', function (e) {
   window.location.href = 'index.html';
 })
 
-cerrar.addEventListener('click', ()=>  modal.classList.remove('visble'))
+cerrar.addEventListener('click', () => modal.classList.remove('visble'))

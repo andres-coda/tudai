@@ -1,0 +1,141 @@
+body.claro {
+  background-color: beige;
+  color: black
+}
+
+body.claro header,
+body.claro #menu {
+  background-color: #30411d;
+  color: white;
+}
+
+body.claro a:hover,
+body.claro a:focus {
+  background-color: #836628;
+  color: black;
+}
+
+body.claro a:active {
+  background-color: #90763e;
+  color: black;
+}
+
+body.claro table {
+  border: 2px solid black;
+}
+
+body.claro .clickeable:hover {
+  box-shadow: 1px 1px 1px black;
+}
+
+body.claro table thead th {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}
+
+body.claro table td {
+  border-bottom: 1px dashed black;
+  border-right: 1px solid black;
+}
+
+body.claro li {
+  box-shadow: 1px 1px 1px black;
+}
+
+body.claro button,
+body.claro .btn-guardar {
+  background-color: #11461d;
+  color: white;
+  box-shadow: 2px 2px 2px black;
+}
+
+body.claro #menu-hamburguesa {
+  background-color: #30411d;
+}
+
+body.claro #menu-hamburguesa svg {
+  color: #c8c8b2;
+}
+
+body.claro .btn-atras {
+  background-color: gainsboro;
+  color: black;
+}
+
+body.claro .ul-checkbox {
+  color: black;
+  border: 1px solid black;
+}
+
+
+
+body.oscuro {
+  background-color: #253c30;
+  color: #e8e5bd;
+}
+
+body.oscuro header,
+body.oscuro #menu {
+  background-color: #b58f3d;
+  color: black;
+}
+
+body.oscuro a:hover,
+body.oscuro a:focus {
+  background-color: #30411d;
+  color: beige;
+}
+
+body.oscuro a:active {
+  background-color: #90763e;
+  color: black;
+}
+
+body.oscuro table {
+  border: 2px solid #d1e3c2;
+}
+
+body.oscuro .clickeable:hover {
+  box-shadow: 1px 1px 1px #d1e3c2;
+}
+
+body.oscuro table thead th {
+  border-top: 1px solid #d1e3c2;
+  border-bottom: 1px solid #d1e3c2;
+  border-right: 1px solid #d1e3c2;
+}
+
+body.oscuro table td {
+  border-bottom: 1px dashed #d1e3c2;
+  border-right: 1px solid #d1e3c2;
+}
+
+body.oscuro li {
+  box-shadow: 1px 1px 1px #d1e3c2;
+}
+
+body.oscuro button,
+body.oscuro .btn-guardar {
+  background-color: #b58f3d;
+  color: black;
+  box-shadow: 2px 2px 2px #80927e;
+}
+
+body.oscuro .btn-atras {
+  background-color: gainsboro;
+  color: black;
+}
+
+body.oscuro input {
+  border: 1px solid rgb(190, 190, 174);
+}
+
+body.oscuro label {
+  color: beige;
+}
+
+body.oscuro .ul-checkbox {
+  color: beige;
+  border: 1px solid beige;
+}

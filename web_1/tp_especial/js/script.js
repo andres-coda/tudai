@@ -6,47 +6,49 @@ const provederesNav = document.querySelector('#proveedores');
 const productosNav = document.querySelector('#productos');
 const listasNav = document.querySelector('#listas');
 
-const crearTituloTabla = (titulos) =>{
-   thead.innerHTML = '';
-   const filaTitulo = document.createElement('tr');
-   titulos.forEach(titulo => {
-      const th = document.createElement('th');
-      th.textContent = titulo;
-      filaTitulo.appendChild(th);
-   });   
-   thead.appendChild(filaTitulo);
+const crearTituloTabla = (titulos) => {
+  thead.innerHTML = '';
+  const filaTitulo = document.createElement('tr');
+  titulos.forEach(titulo => {
+    const th = document.createElement('th');
+    th.textContent = titulo;
+    filaTitulo.appendChild(th);
+  });
+  thead.appendChild(filaTitulo);
 }
 
 const listaSeleccion = (idElemento) => {
-   lista.map(p => {
-      if (p.id === idElemento) {
-         return
-      }
-   })
+  lista.map(p => {
+    if (p.id === idElemento) {
+      return
+    }
+  })
 }
 
 const tr = document.querySelectorAll('tr');
 tr.forEach(elemento => {
-   elemento.addEventListener('click', function () {
-      listaSeleccion(elemento.id)
-   });
+  elemento.addEventListener('click', function () {
+    listaSeleccion(elemento.id)
+  });
+})
+
+
+provederesNav.addEventListener('click', function () {
+  sessionStorage.setItem('tipo', 'proveedores');
+})
+
+productosNav.addEventListener('click', function () {
+  sessionStorage.setItem('tipo', 'productos');
+  sessionStorage.removeItem('rubro')
+  sessionStorage.removeItem('proveedor')
+})
+
+listasNav.addEventListener('click', function () {
+  sessionStorage.setItem('tipo', 'listas');
 })
 
 
 const navegar = (tipo) => {
-   sessionStorage.setItem('tipo', tipo);
-   window.location.href = 'formulario.html';
+  sessionStorage.setItem('tipo', tipo);
+  window.location.href = 'formulario.html';
 }
-
-provederesNav.addEventListener('click', function (){
-   sessionStorage.setItem('tipo', 'proveedores');
-})
-
-productosNav.addEventListener('click', function (){
-   sessionStorage.setItem('tipo', 'productos');
-})
-
-listasNav.addEventListener('click', function (){
-   sessionStorage.setItem('tipo', 'listas');
-})
-
