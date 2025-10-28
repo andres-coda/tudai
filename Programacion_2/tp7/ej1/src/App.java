@@ -55,3 +55,26 @@ public class App {
   }
 
 }
+
+/*
+ 
+quimicos{
+nombre
+patologicos[]
+cerealesdesaconsejados[]
+}
+
+patologicos{
+nombre
+}
+
+enfermedad{
+nombre
+patologicos[]
+}
+
+cereal{
+nombre
+enfermedadesFrecuentes[]
+}
+ */
