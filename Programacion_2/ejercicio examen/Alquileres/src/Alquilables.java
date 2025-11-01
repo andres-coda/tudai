@@ -1,18 +1,15 @@
-public class Alquilables extends Elementos{
+public class Alquilables extends Elemento{
     private double valor;
     private int antiguedad;
     private String descripcion;
+    private Calculador calculador;
 
-    public Alquilables(String id, double valor, int antiguedad, String descripcion) {
+    public Alquilables(String id, double valor, int antiguedad, String descripcion, Calculador calculador) {
         super(id);
         this.valor = valor;
         this.antiguedad = antiguedad;
         this.descripcion = descripcion;
-    }
-
-    @Override
-    public int calcularAntiguedad() {
-        return getAntiguedad();
+        this.calculador = calculador;
     }
 
     @Override
@@ -22,12 +19,17 @@ public class Alquilables extends Elementos{
 
 
 
+    @Override
+    public double calcularAlquiler() {
+        return this.calculador.calcular(this);
+    }
+
     public double getValor() {
         return valor;
     }
 
 
-
+    @Override
     public int getAntiguedad() {
         return antiguedad;
     }
