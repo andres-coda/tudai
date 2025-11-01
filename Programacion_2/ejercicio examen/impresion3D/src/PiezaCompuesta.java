@@ -5,6 +5,12 @@ public class PiezaCompuesta extends Pieza {
 
   public PiezaCompuesta(String nombre, String descripcion, int cantidadPla, int tiempo) {
     super(nombre, descripcion, cantidadPla, tiempo);
+    this.piezas = new ArrayList<Pieza>();
+  }
+
+  public PiezaCompuesta(String nombre, String descripcion) {
+    super(nombre, descripcion, 1,45);
+    this.piezas = new ArrayList<Pieza>();
   }
 
   public void addPieza(Pieza p, Busqueda b) {
