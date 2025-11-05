@@ -29,6 +29,16 @@ const mostrarRubros = () => {
 
 const funcionEliminarRubro = ()=>{};
 
+const nuevoRubro = (id) => {
+  let rubro = null;
+  if (id) {
+    rubro = rubros.find(r => r.id == id);
+  }
+  const form = crearForm();
+  titulo.textContent = 'Nuevo rubro';
+  form.formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true, null, rubro?.nombre), form.botonera);
+}
+
 const guardarRubro = () => {
   const nombre = document.querySelector('#nombre').value;
   const captcha = document.querySelector('#captcha').value;

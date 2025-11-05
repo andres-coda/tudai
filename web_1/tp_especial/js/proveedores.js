@@ -36,6 +36,19 @@ const mostrarProveedores = () => {
 
   const funcionEliminarProveedor = ()=>{};
 
+  const nuevoProeveedor = (id) => {
+  let prov = null;
+  if (id) {
+    prov = proveedores.find(p => p.id == id);
+  }
+  const form = crearForm();
+  titulo.textContent = 'Nuevo proveedor';
+  form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
+  form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', true, 'email', prov?.email), form.botonera);
+  form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
+  form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
+}
+
   const guardarProveedor = () => {
   const nombre = document.querySelector('#nombre').value;
   const telefono = document.querySelector('#telefono').value;

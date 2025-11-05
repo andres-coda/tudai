@@ -103,40 +103,7 @@ const crearCheckBox = (textLabel, nombre, listaElementos, datos) => {
   return div;
 }
 
-const nuevoProeveedor = (id) => {
-  let prov = null;
-  if (id) {
-    prov = proveedores.find(p => p.id == id);
-  }
-  const form = crearForm();
-  titulo.textContent = 'Nuevo proveedor';
-  form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
-  form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', true, 'email', prov?.email), form.botonera);
-  form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
-  form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
-}
 
-const nuevoRubro = (id) => {
-  let rubro = null;
-  if (id) {
-    rubro = rubros.find(r => r.id == id);
-  }
-  const form = crearForm();
-  titulo.textContent = 'Nuevo rubro';
-  form.formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true, null, rubro?.nombre), form.botonera);
-  form.formulario.insertBefore(crearCaptchap(crearInput), form.botonera);
-}
-
-const nuevaLista = (id) => {
-  let pedido = null;
-  if (id) {
-    pedido = lista.find(l => l.id == id);
-  }
-  const form = crearForm();
-  titulo.textContent = 'Nueva lista';
-  form.formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date', pedido?.fecha), form.botonera);
-  form.formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true, pedido?.proveedor), form.botonera);
-}
 
 const selecId = (array) => {
   let id = 0;
@@ -165,6 +132,8 @@ const guardarRegistro = (formulario) => {
 
   modal.classList.add('visble')
   switch (rutaVerif.newPath) {
+    case URLRUTAS.LOGIN: loginFetch();
+      break;
     case URLRUTAS.PROVEEDORES_FORM:
       const nuevoProveedor = guardarProveedor(rutaVerif.idSelect);
       if (nuevoProveedor) {
@@ -194,6 +163,3 @@ const guardarRegistro = (formulario) => {
       break;
   }
 }
-
-
-

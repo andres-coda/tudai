@@ -30,6 +30,17 @@ const mostrarListas = () => {
 
 const funcionEliminarPedido = ()=>{};
 
+const nuevaLista = (id) => {
+  let pedido = null;
+  if (id) {
+    pedido = lista.find(l => l.id == id);
+  }
+  const form = crearForm();
+  titulo.textContent = 'Nueva lista';
+  form.formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date', pedido?.fecha), form.botonera);
+  form.formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true, pedido?.proveedor), form.botonera);
+}
+
 const guardarLista = (formulario) => {
   const fecha = document.querySelector('#fecha').value;
   const proveedor = document.querySelector('#proveedor').value;

@@ -15,6 +15,8 @@ const URLRUTAS = {
   PROVEEDORES_FORM: '/proveedores/formulario',
   LISTAS: '/listas',
   LISTAS_FORM: '/listas/formulario',
+  LOGIN: '/login',
+  REGISTRO: '/registro'
 };
 
 const rutas = {
@@ -27,6 +29,8 @@ const rutas = {
   [URLRUTAS.PROVEEDORES_FORM]: carpetaBase + '/formulario.html',
   [URLRUTAS.LISTAS]: carpetaBase + '/tabla.html',
   [URLRUTAS.LISTAS_FORM]: carpetaBase + '/formulario.html',
+  [URLRUTAS.LOGIN]: carpetaBase + '/formulario.html',
+  [URLRUTAS.REGISTRO]: carpetaBase + '/formulario.html',
 }
 
 async function cargarRuta() {
@@ -74,7 +78,7 @@ const verificarRutasDinamicas = (path) => {
     newPath = URLRUTAS.PRODUCTOS_FORM;
   }
 
-   if (path.startsWith(URLRUTAS.RUBROS_FORM)) {
+  if (path.startsWith(URLRUTAS.RUBROS_FORM)) {
     const partes = path.split('/');
     idSelect = partes[3];
     newPath = URLRUTAS.RUBROS_FORM;
@@ -114,7 +118,9 @@ const generarPantalla = (rutaVerif) => {
       break;
     case URLRUTAS.LISTAS: mostrarListas();
       break;
-      case URLRUTAS.LISTAS_FORM: nuevaLista(rutaVerif.idSelect);
+    case URLRUTAS.LOGIN: login();
+      break;
+    case URLRUTAS.REGISTRO: registro();
       break;
   }
 }

@@ -26,3 +26,11 @@ const verificarLista = (fecha, proveedor) => {
   if (!proveedor) return 'La lista requiere proveedor';
   return null;
 }
+
+const verificarLogin = (email, password) => {
+  if (!email) return 'Para loguiarse agregue el mail';
+  if (email.length < 5 || email.length > 256) return 'El mail del login debe tener entre 5 y 256 caracteres';
+  if (!password) return 'Requiere una contraseña';
+  if (password.length < 6 || password.length > 18) return 'La contraseña debe tener entre 6 y 18 caracteres';
+  return null;
+}
