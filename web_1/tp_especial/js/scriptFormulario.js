@@ -1,35 +1,59 @@
 "use strict"
-const formulario = document.querySelector('form');
-const botonera = document.querySelector('.botonera');
-const guardar = document.querySelector('.btn-guardar');
-const atras = document.querySelector('.btn-atras');
-const cerrar = document.querySelector('#btn-cerrar');
-const modal = document.querySelector('.modal');
-const modalInterno = document.querySelector('#modal-contenido');
-const tipo = sessionStorage.getItem('tipo') || '';
+const crearFormulario = () => {
+  const formulario = document.querySelector('form');
+  const tipo = sessionStorage.getItem('tipo') || '';
+  return {
+    formulario, botonera, guardar, atras, cerrar, modal,
+    modalInterno, tipo,
+  }
+}
 
-const datosInput = (input, label, textLabel, nombre, requerido) => {
+const crearForm = () => {
+  const guardar = document.querySelector('.btn-guardar');
+  const formulario = document.querySelector('form');
+  const atras = document.querySelector('.btn-atras');
+  const botonera = document.querySelector('.botonera');
+
+  guardar.value = 'Guardar';
+
+  formulario.addEventListener('submit', function (e) {
+    e.preventDefault();
+    guardarRegistro(formulario);
+  });
+  atras.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.history.back();
+  });
+  return { formulario, botonera };
+}
+
+const datosInput = (input, label, textLabel, nombre, requerido, dato) => {
   input.id = nombre;
   input.name = nombre;
-  input.value = '';
+  if(input.type == 'date' && dato){
+    const fecha = new Date(dato);
+    input.value = fecha.toISOString().split('T')[0];
+  } else {
+    input.value = dato || '';
+  }
   input.required = requerido;
   label.htmlFor = nombre;
   label.textContent = textLabel;
 }
 
-const crearInput = (textLabel, nombre, requerido, tipo) => {
+const crearInput = (textLabel, nombre, requerido, tipo, dato) => {
   const div = document.createElement('div');
   const label = document.createElement('label');
   const input = document.createElement('input');
   input.type = tipo || 'text';
-  datosInput(input, label, textLabel, nombre, requerido);
+  datosInput(input, label, textLabel, nombre, requerido, dato);
   div.classList.add('div-input');
   div.appendChild(label);
   div.appendChild(input);
   return div;
 }
 
-const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
+const crearSelec = (textLabel, nombre, arraySelec, requerido, dato) => {
   const div = document.createElement('div');
   const label = document.createElement('label');
   const select = document.createElement('select');
@@ -39,6 +63,9 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
     opcion.id = elemento.id;
     opcion.textContent = elemento.nombre;
     opcion.value = elemento.id;
+    if (dato && elemento.id === dato) {
+      opcion.selected = true;
+    }
     select.appendChild(opcion);
   });
   div.classList.add('div-input');
@@ -47,7 +74,7 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido) => {
   return div;
 }
 
-const crearCheckBox = (textLabel, nombre, listaElementos) => {
+const crearCheckBox = (textLabel, nombre, listaElementos, datos) => {
   const div = document.createElement('div');
   div.classList.add('div-check')
   const ul = document.createElement('ul');
@@ -64,6 +91,9 @@ const crearCheckBox = (textLabel, nombre, listaElementos) => {
     input.type = 'checkbox';
     datosInput(input, label, elemento.nombre, nombre, false);
     input.value = elemento.id;
+    if (Array.isArray(datos) && datos.includes(elemento.id)) {
+      input.checked = true;
+    }
     li.appendChild(label);
     li.appendChild(input);
     ul.appendChild(li);
@@ -73,47 +103,39 @@ const crearCheckBox = (textLabel, nombre, listaElementos) => {
   return div;
 }
 
-const nuevoProeveedor = () => {
+const nuevoProeveedor = (id) => {
+  let prov = null;
+  if (id) {
+    prov = proveedores.find(p => p.id == id);
+  }
+  const form = crearForm();
   titulo.textContent = 'Nuevo proveedor';
-  formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true), botonera);
-  formulario.insertBefore(crearInput('Email del proveedor: ', 'email', true, 'email'), botonera);
-  formulario.insertBefore(crearInput('Telefono: ', 'telefono', true), botonera);
-  formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos), botonera);
+  form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
+  form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', true, 'email', prov?.email), form.botonera);
+  form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
+  form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
 }
 
-const nuevoProducto = () => {
-  titulo.textContent = 'Nuevo producto';
-  formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true), botonera);
-  formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false), botonera);
-  formulario.insertBefore(crearCaptchap(crearInput), botonera);
-}
-
-const nuevoRubro = () => {
+const nuevoRubro = (id) => {
+  let rubro = null;
+  if (id) {
+    rubro = rubros.find(r => r.id == id);
+  }
+  const form = crearForm();
   titulo.textContent = 'Nuevo rubro';
-  formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true), botonera);
-  formulario.insertBefore(crearCaptchap(crearInput), botonera);
+  form.formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true, null, rubro?.nombre), form.botonera);
+  form.formulario.insertBefore(crearCaptchap(crearInput), form.botonera);
 }
 
-const nuevaLista = () => {
+const nuevaLista = (id) => {
+  let pedido = null;
+  if (id) {
+    pedido = lista.find(l => l.id == id);
+  }
+  const form = crearForm();
   titulo.textContent = 'Nueva lista';
-  formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date'), botonera);
-  formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true), botonera);
-}
-
-switch (tipo) {
-  case 'proveedores':
-    nuevoProeveedor();
-    break;
-  case 'productos':
-    nuevoProducto();
-    break;
-  case 'rubros':
-    nuevoRubro();
-    break;
-  case 'listas':
-    nuevaLista();
-    break;
-  default: console.log('no hay tipo')
+  form.formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date', pedido?.fecha), form.botonera);
+  form.formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true, pedido?.proveedor), form.botonera);
 }
 
 const selecId = (array) => {
@@ -126,134 +148,52 @@ const selecId = (array) => {
   return id.toString();
 }
 
-const guardarProveedor = () => {
-  const nombre = document.querySelector('#nombre').value;
-  const telefono = document.querySelector('#telefono').value;
-
-  const verificado = verificarProducto(nombre, telefono);
-  if (verificado) {
-    efectoModal(`Error: ${verificado}`);
-    return;
-  }
-
-  const productos = document.querySelectorAll('.input-check:checked');
-  const productosIds = Array.from(productos).map(checkbox => checkbox.value);
-
-  const nuevoPorveedor = {
-    id: selecId(proveedores),
-    nombre: nombre,
-    telefono: telefono,
-    productos: productosIds,
-  }
-  proveedores.push(nuevoPorveedor);
-  return nuevoPorveedor;
-}
-
-const guardarProducto = () => {
-  const nombre = document.querySelector('#nombre').value;
-  const rubro = document.querySelector('#rubro').value;
-  const captcha = document.querySelector('#captcha').value;
-  const valiCaptchap = validarCaptchap(captcha);
-
-  const verificado = verificarProducto(nombre, rubro);
-  if (verificado || valiCaptchap) {
-    efectoModal(`Error: ${verificado || valiCaptchap}`);
-    return;
-  }
-  const nuevoProducto = {
-    id: selecId(productos),
-    nombre: nombre,
-    rubro: rubro
-  }
-  productos.push(nuevoProducto);
-  return nuevoProducto;
-}
-
-const guardarRubro = () => {
-  const nombre = document.querySelector('#nombre').value;
-  const captcha = document.querySelector('#captcha').value;
-  const verificado = verificarRubro(nombre);
-  const valiCaptchap = validarCaptchap(captcha);
-  if (verificado || valiCaptchap) {
-    efectoModal(`Error: ${verificado || valiCaptchap}`);
-    return;
-  }
-  const nuevoRubro = {
-    id: selecId(productos),
-    nombre: nombre,
-  }
-  rubros.push(nuevoRubro);
-  return nuevoRubro;
-}
-
-const guardarLista = () => {
-  const fecha = document.querySelector('#fecha').value;
-  const proveedor = document.querySelector('#proveedor').value;
-  const verificado = verificarLista(fecha, proveedor);
-  if (verificado) {
-    efectoModal(`Error: ${verificado}`);
-    return;
-  }
-
-  const dto = {
-    proveedor,
-    fecha
-  }
-  
-  formulario.reset();
-  sessionStorage.setItem('crearLista', JSON.stringify(dto));
-  navegarProductos('crearLista');
-}
-
 const efectoModal = (newTexto) => {
+  const modalInterno = document.querySelector('#modal-contenido');
   const texto = document.createElement('p');
   texto.textContent = newTexto;
   modalInterno.innerHTML = '';
   texto.classList.add('error');
   modalInterno.appendChild(texto);
+
 }
 
-const guardarRegistro = () => {
+const guardarRegistro = (formulario) => {
+  const ruta =window.location.hash.slice(1) || '/';
+
+  const rutaVerif = verificarRutasDinamicas(ruta)
+
   modal.classList.add('visble')
-  switch (tipo) {
-    case 'proveedores':
-      const nuevoProveedor = guardarProveedor();
+  switch (rutaVerif.newPath) {
+    case URLRUTAS.PROVEEDORES_FORM:
+      const nuevoProveedor = guardarProveedor(rutaVerif.idSelect);
       if (nuevoProveedor) {
         efectoModal(`Se creó el proveedor ${nuevoProveedor.nombre} correctamente`);
         formulario.reset();
       }
       break;
-    case 'productos':
-      const nuevoProducto = guardarProducto();
+    case URLRUTAS.PRODUCTOS_FORM:
+      const nuevoProducto = guardarProducto(rutaVerif.idSelect);
       if (nuevoProducto) {
         efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
         formulario.reset();
       }
       break;
-    case 'rubros':
-      const nuevoRubro = guardarRubro();
+    case URLRUTAS.RUBROS_FORM:
+      const nuevoRubro = guardarRubro(rutaVerif.idSelect);
       if (nuevoRubro) {
         efectoModal(`Se creó el rubro ${nuevoRubro.nombre} correctamente`);
         formulario.reset();
       }
       break;
-    case 'listas':
-      guardarLista();
+    case URLRUTAS.LISTAS_FORM:
+      guardarLista(rutaVerif.idSelect);
       break;
 
     default: console.log('no hay tipo')
       break;
   }
 }
-guardar.value = 'Guardar';
-formulario.addEventListener('submit', function (e) {
-  e.preventDefault();
-  guardarRegistro();
-})
 
-atras.addEventListener('click', function (e) {
-  e.preventDefault();
-  window.location.href = 'index.html';
-})
 
-cerrar.addEventListener('click', () => modal.classList.remove('visble'))
+

@@ -10,7 +10,7 @@ body {
   height: 100vh;
 }
 
-header,
+nav,
 footer {
   position: relative;
   margin: 0;
@@ -25,6 +25,22 @@ footer {
 
 footer {
   padding: .5rem;
+}
+
+#contenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  padding: .5rem 1rem;
+  box-sizing: border-box;
+  scrollbar-gutter: calc();
+  scrollbar-width: thin;
+  scrollbar-color: #11461d;
 }
 
 a {
@@ -62,6 +78,7 @@ table tbody tr {
   gap: 0;
   padding: 0;
   margin: 0;
+  position: relative;
 }
 
 table thead th {
@@ -73,6 +90,10 @@ table td {
   margin: 0;
   padding: 5px;
   box-sizing: border-box;
+}
+
+table tbody tr td:nth-last-child(2) {
+  padding-right: 2rem;
 }
 
 .clickeable {
@@ -101,6 +122,7 @@ li {
   box-sizing: border-box;
   border-radius: 5px;
   padding: .2rem .5rem;
+  position: relative;
   text-align: center;
 }
 
@@ -111,6 +133,24 @@ button,
   border-radius: 20px;
   cursor: pointer;
   font-size: larger;
+}
+
+.btn-icono {
+  box-shadow: none;
+  border: none;
+  width: 25px;
+  height: 25px;
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.flecha-abierta {
+  transform: rotate(180deg);
+}
+
+button:hover,
+.btn-guardar:hover {
+  scale: 1.05;
 }
 
 #menu-hamburguesa {
@@ -124,23 +164,49 @@ button,
   box-sizing: border-box;
 }
 
-button:hover,
-.btn-guardar:hover {
-  scale: 1.05;
-}
 
-#modo, #guardarLista  {
+#modo,
+#guardarLista {
   padding: .5rem 2rem;
 }
 
-.agregar {
+#botonera-agregar {
   position: absolute;
   top: 50%;
   translate: 0 -20px;
   right: 2rem;
 }
 
-.contenedor,
+.botonera-flecha-contenedor {
+  position: absolute;
+  z-index: 10;
+  top: 45%;
+  right: .3rem;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.botonera-flecha {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 .5rem;
+  gap:.5rem;
+}
+
+.btn-icono:hover{
+  scale: 1.5;
+}
+
+.botonera-flecha:not(.oculto) {
+  animation: fadeIn 0.5s ease;
+}
+
 .div-img {
   display: flex;
   flex-direction: column;
@@ -150,8 +216,7 @@ button:hover,
   flex: 1;
   padding: 1rem;
   box-sizing: border-box;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  overflow: hidden;
 }
 
 .div-img {
@@ -167,7 +232,7 @@ img {
   object-fit: contain;
 }
 
-.cabecera {
+#cabecera {
   display: flex;
   flex-direction: row;
   position: relative;
@@ -209,11 +274,12 @@ img {
   box-sizing: border-box;
 }
 
-.cambiar-modo, #guardarLista {
+.cambiar-modo,
+#guardarLista {
   width: max-content;
 }
 
-.oculto{
+.oculto {
   display: none;
 }
 
@@ -225,7 +291,24 @@ img {
   gap: 2rem;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media(width <=500px) {
+  h1 {
+    font-size: 1.5em;
+    text-align: center;
+  }
+
   #menu {
     display: none;
   }

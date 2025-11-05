@@ -6,26 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/modos.css" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/stylesFormulario.css" />
   <title>Lista</title>
 </head>
 
 <body class="claro">
-  <header>
+  <nav>
     <ul id="menu">
       <li>
-        <a id="inicio" class="enlace" href="index.html">Inicio</a>
+        <a id="inicio" class="enlace" href="#/">Inicio</a>
       </li>
       <li>
-        <a id="proveedores" class="enlace" href="listas.html">Proveedores</a>
+        <a id="proveedores" class="enlace" href="#/proveedores">Proveedores</a>
       </li>
       <li>
-        <a id="rubros" class="enlace" href="rubros.html">Rubros</a>
+        <a id="rubros" class="enlace" href="#/rubros">Rubros</a>
       </li>
       <li>
-        <a id="productos" class="enlace" href="listas.html">Productos</a>
+        <a id="productos" class="enlace" href="#/productos">Productos</a>
       </li>
       <li>
-        <a id="listas" class="enlace" href="listas.html">Pedidos</a>
+        <a id="listas" class="enlace" href="#/listas">Pedidos</a>
       </li>
     </ul>
     <button id="menu-hamburguesa">
@@ -34,19 +35,35 @@
           stroke-linejoin="round" />
       </svg>
     </button>
-  </header>
-  <div class="titulo-index">
-    <h1 id="titulo">Listas verdulería</h1>
+  </nav>
+  <div id="cabecera">
+    <h1 id="titulo">Listas</h1>
+  <div id="botonera-agregar">
   </div>
-  <div class="div-img">
-    <img src="./assets/frutas.webp" />
   </div>
-  <div class="titulo-index">
-    <p>Te damos la bienvenida a la aplicación web para crear listas de proveedores para verdulería</p>
+  <div id="contenedor"> 
   </div>
+  <div class="modal no-visible">
+  <div id="modal-interno">
+    <button id="btn-cerrar">x</button>
+    <div id="modal-contenido"></div>
+  </div>
+</div>
   <footer><button id="modo" class="cambiar-modo">Modo</button></footer>
   <script src="js/modos.js"></script>
-  <script src="js/script.js"></script>
+  <script src="js/rutas.js"></script> 
+  <script src="db/lista.js"></script>
+  <script src="js/script.js"></script> 
+  <script src="js/inicio.js"></script>
+  <script src="js/scriptFormulario.js"></script>
+  <script src="js/captchap.js"></script>
+  <script src="js/productos.js"></script>
+  <script src="js/proveedores.js"></script>
+  <script src="js/listas.js"></script>
+  <script src="js/crearLista.js"></script>
+  <script src="js/rubros.js"></script>
+  <script src="js/verificacion.js"></script>
+  <script src="js/captchap.js"></script>
 </body>
 
 </html>

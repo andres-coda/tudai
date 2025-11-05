@@ -1,5 +1,12 @@
 const mostrarProveedores = () => {
-  titulo.textContent = 'Proveedores'
+  const tbody = document.querySelector('#tabla tbody');
+
+  titulo.textContent = 'Proveedores';
+  const btn = crearBtnAgregar();
+  btn.addEventListener('click', ()=>{
+    window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}`;
+  });
+
   const titulos = ['Proveedor', 'Email', 'Telefono'];
   crearTituloTabla(titulos);
 
@@ -17,25 +24,37 @@ const mostrarProveedores = () => {
     telefono.textContent = p.telefono;
 
     fila.classList.add('clickeable');
+
+    fila.addEventListener('click', () =>{
+      window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${p.id}`;
+    });
+
+    const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProveedor, URLRUTAS.PROVEEDORES_FORM);
+    fila.appendChild(subMenuEdit);
   })
 }
 
+  const funcionEliminarProveedor = ()=>{};
 
-if (sessionStorage.getItem('tipo') === 'proveedores') {
-  mostrarProveedores();
-  agregar.addEventListener('click', () => navegar('proveedores'))
-}
+  const guardarProveedor = () => {
+  const nombre = document.querySelector('#nombre').value;
+  const telefono = document.querySelector('#telefono').value;
 
-const filas = document.querySelectorAll('.clickeable')
+  const verificado = verificarProducto(nombre, telefono);
+  if (verificado) {
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
 
-filas.forEach(f => {
-  f.addEventListener('click', () => {
-    sessionStorage.removeItem('rubro')
-    sessionStorage.setItem('proveedor', `${f.id}`);
-    navegarProductos('productos')
-  })
-})
+  const productos = document.querySelectorAll('.input-check:checked');
+  const productosIds = Array.from(productos).map(checkbox => checkbox.value);
 
-const mostrarProveedorProductos = (id) => {
-
+  const nuevoPorveedor = {
+    id: selecId(proveedores),
+    nombre: nombre,
+    telefono: telefono,
+    productos: productosIds,
+  }
+  proveedores.push(nuevoPorveedor);
+  return nuevoPorveedor;
 }

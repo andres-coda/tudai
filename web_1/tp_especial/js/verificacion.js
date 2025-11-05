@@ -11,7 +11,7 @@ const verificarProveedor = (nombre, telefono) => {
   if (!email) return 'El proveedor requiere un email';
   if (!telefono) return 'El proveedor debe tener un número de telefono';
   if (!Number(telefono)) 'El telefono debe ser númerico';
-  if (numero.length < 10 || numero.length > 15) 'El número debe tener entre 10 y 15 caracteres';
+  if (telefono.length < 10 || telefono.length > 15) 'El número debe tener entre 10 y 15 caracteres';
   return null;
 }
 

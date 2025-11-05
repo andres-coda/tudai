@@ -1,5 +1,12 @@
 const mostrarListas = () => {
-  titulo.textContent = 'Pedidos'
+  const tbody = document.querySelector('#tabla tbody');
+
+  titulo.textContent = 'Pedidos';
+  const btn = crearBtnAgregar();
+  btn.addEventListener('click', ()=>{
+    window.location.hash = `${URLRUTAS.LISTAS_FORM}`;
+  });
+
   const titulos = ['Fecha', 'Proveedor', 'Estado'];
   crearTituloTabla(titulos);
 
@@ -15,12 +22,29 @@ const mostrarListas = () => {
 
     const estado = fila.insertCell();
     estado.textContent = p.estado;
+
+    const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarPedido, URLRUTAS.LISTAS_FORM);
+    fila.appendChild(subMenuEdit);
   })
 }
 
-if (sessionStorage.getItem('tipo') === 'listas') {
+const funcionEliminarPedido = ()=>{};
 
-  mostrarListas();
+const guardarLista = (formulario) => {
+  const fecha = document.querySelector('#fecha').value;
+  const proveedor = document.querySelector('#proveedor').value;
+  const verificado = verificarLista(fecha, proveedor);
+  if (verificado) {
+    efectoModal(`Error: ${verificado}`);
+    return;
+  }
 
-  agregar.addEventListener('click', () => navegar('listas'))
+  const dto = {
+    proveedor,
+    fecha
+  }
+
+  formulario.reset();
+  sessionStorage.setItem('crearLista', JSON.stringify(dto));
+  
 }

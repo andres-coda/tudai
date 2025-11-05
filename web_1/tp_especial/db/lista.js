@@ -240,7 +240,9 @@ const rubros = [
   { id: '07', nombre: 'Tubérculos' },
   { id: '08', nombre: 'Legumbres' },
   { id: '09', nombre: 'Frutas del bosque' },
-  { id: '10', nombre: 'Hierbas aromáticas' }
+  { id: '10', nombre: 'Hierbas aromáticas' },
+  { id: '11', nombre: 'Frutas del bosque' },
+  { id: '12', nombre: 'Hierbas aromáticas' },
 ];
 
 const productos = [
