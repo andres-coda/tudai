@@ -82,3 +82,23 @@ const crearBtnDesplegable = (id, eliminarDato, url) => {
 }
 
 
+function agregarScript({src, id}, callback) {
+   if (document.getElementById(id)) {
+    callback?.();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = src;
+  script.id = id;
+  script.onload = () => callback?.();
+  document.body.appendChild(script);
+}
+
+
+function quitarScript(id) {
+  const script = document.getElementById(id);
+  if (script) {
+    script.remove();
+  }
+}

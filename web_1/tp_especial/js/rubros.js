@@ -39,19 +39,49 @@ const nuevoRubro = (id) => {
   form.formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true, null, rubro?.nombre), form.botonera);
 }
 
-const guardarRubro = () => {
+const rubroDto = () => {
   const nombre = document.querySelector('#nombre').value;
-  const captcha = document.querySelector('#captcha').value;
   const verificado = verificarRubro(nombre);
-  const valiCaptchap = validarCaptchap(captcha);
-  if (verificado || valiCaptchap) {
-    efectoModal(`Error: ${verificado || valiCaptchap}`);
+   if (verificado) {
+    efectoModal(`Error: ${verificado}`);
     return;
   }
-  const nuevoRubro = {
-    id: selecId(productos),
+  const dto = {
     nombre: nombre,
   }
-  rubros.push(nuevoRubro);
-  return nuevoRubro;
+  return dto;
+}
+
+async function rubroFetch(id=null) {
+  agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
+  console.log('id rubro', id);
+  const ruta = id ? RUTAAPI.RUBRO + '/' + id :RUTAAPI.RUBRO ;
+  const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
+
+  console.log('ruta', ruta)
+  try{
+	const respuesta = await fetchGenerico(
+    ruta, 
+    rubroDto(), 
+    method,
+    rubroAdapter,
+  );
+
+	if(respuesta.error) {
+    throw new Error(respuesta.error)
+  }
+	if(respuesta.res){
+    const index = rubros.findIndex(r=> r.id === respuesta.res.id);
+    if (index != -1){
+      rubros[index] = respuesta.res;
+    } else {
+      rubros.push(respuesta.res);
+    }
+    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
+    window.location.hash = `${URLRUTAS.RUBROS}`;
+	}
+
+  } catch (er){
+    console.log(er);
+  }
 }

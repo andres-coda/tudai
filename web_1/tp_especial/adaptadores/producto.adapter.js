@@ -1,0 +1,5 @@
+const productoAdaptador = () =>{
+    const producto = {
+        
+    }
+}

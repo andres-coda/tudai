@@ -37,11 +37,10 @@ const loginDto = () => {
 
 async function loginFetch() {
 
-	const respuesta = await fetchGenerico(RUTAAPI.LOGIN, loginDto(), METODOS_FETCH.POST);
+	const respuesta = await fetchGenerico(RUTAAPI.LOGIN, loginDto(), METODOS_FETCH.POST,loginAdaptador);
 
 	if(respuesta.error) {return}
 	if(respuesta.res){
-		localStorage.setItem('token', respuesta.res.token);
 		window.location.hash = `${URLRUTAS.PRODUCTOS}`;
 	}
 }

@@ -2,6 +2,13 @@ const rutaBaseApi = 'http://localhost:8080/api/'
 const RUTAAPI = {
     REGISTRO : rutaBaseApi+'auth/register',
     LOGIN : rutaBaseApi+'auth/login',
+    PRODUCTO: rutaBaseApi+'productos-particulares',
+    RUBRO : rutaBaseApi+'rubros-particulares'
+}
+
+const RUTASCRIPT = {
+  RUBRO_ADAPTER : { id : 'rubroAdapter', src : 'adaptadores/rubro.adapter.js'},
+  RUBRO : { id : 'rubroScript', src : 'js/rubros.js'}
 }
 
 
@@ -12,7 +19,7 @@ const METODOS_FETCH ={
   DELETE: 'DELETE'
 }
 
-async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET) {
+async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET, adaptador=null) {
   const token = localStorage.getItem('token');
   let error = '';
   let res;
@@ -37,10 +44,17 @@ async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET) {
 
     if (!respuesta.ok) {
       const textoError = await respuesta.text();
-      error = `Error ${respuesta.status}: ${textoError}`;
+      throw new Error(`Error ${respuesta.status}: ${textoError}`);
     }
 
-    res = await respuesta.json().catch(() => null);
+    const aux = await respuesta.json().catch(() => null);
+    
+    if(!adaptador) {
+      res = aux;
+    } else {
+      res = adaptador(aux);
+    }
+
   } catch (er) {
     console.error('Error en fetchGenerico:', er);
     error += er.message;

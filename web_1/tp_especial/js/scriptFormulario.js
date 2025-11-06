@@ -134,6 +134,8 @@ const guardarRegistro = (formulario) => {
   switch (rutaVerif.newPath) {
     case URLRUTAS.LOGIN: loginFetch();
       break;
+    case URLRUTAS.RUBROS_FORM: rubroFetch(rutaVerif.selecId);
+      break;
     case URLRUTAS.PROVEEDORES_FORM:
       const nuevoProveedor = guardarProveedor(rutaVerif.idSelect);
       if (nuevoProveedor) {

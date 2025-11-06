@@ -112,11 +112,16 @@ const generarPantalla = (rutaVerif) => {
       break;
     case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
       break
-    case URLRUTAS.RUBROS: mostrarRubros();
+    case URLRUTAS.RUBROS:{
+      agregarScript(RUTASCRIPT.RUBRO);      
+      mostrarRubros()
+    } 
       break;
     case URLRUTAS.RUBROS_FORM: nuevoRubro(rutaVerif.idSelect);
       break;
-    case URLRUTAS.LISTAS: mostrarListas();
+    case URLRUTAS.LISTAS: {
+      mostrarListas();
+    };
       break;
     case URLRUTAS.LOGIN: login();
       break;

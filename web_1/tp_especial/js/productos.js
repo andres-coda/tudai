@@ -65,29 +65,46 @@ const mostrarProductos = (idProveedor, idRubro) => {
   titulo.textContent = 'Nuevo producto';
   form.formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true, null, producto ? producto.nombre : null), form.botonera);
   form.formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false, producto && producto.rubro), form.botonera);
-  form.formulario.insertBefore(crearCaptchap(crearInput), form.botonera);
 }
 
-const guardarProducto = () => {
+const productoDto = () => {
   const nombre = document.querySelector('#nombre').value;
   const rubro = document.querySelector('#rubro').value;
-  const captcha = document.querySelector('#captcha').value;
-  const valiCaptchap = validarCaptchap(captcha);
 
   const verificado = verificarProducto(nombre, rubro);
-  if (verificado || valiCaptchap) {
-    efectoModal(`Error: ${verificado || valiCaptchap}`);
+  if (verificado) {
+    efectoModal(`Error: ${verificado }`);
     return;
   }
-  const nuevoProducto = {
-    id: selecId(productos),
+  const dto = {
     nombre: nombre,
     rubro: rubro
   }
-  productos.push(nuevoProducto);
-  return nuevoProducto;
+  return dto;
 }
   
   const funcionEliminarProducto = ()=>{};
+
+  async function productoFetch(id) {
+    const ruta = id ? RUTAAPI.PRODUCTO + '/' + id :RUTAAPI.PRODUCTO ;
+    const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
+	const respuesta = await fetchGenerico(
+    ruta, 
+    productoDto(), 
+    method,
+    productoAdaptador,
+  );
+
+	if(respuesta.error) {return}
+	if(respuesta.res){
+    const index = productos.findIndex(p=> p.id === respuesta.res.id);
+    if (index != -1){
+      productos[index] = respuesta.res;
+    } else {
+      productos.push(respuesta.res);
+    }
+    window.location.hash = `${URLRUTAS.PRODUCTOS}`;
+	}
+}
 
   //agregar.addEventListener('click', () => navegar('productos'));
