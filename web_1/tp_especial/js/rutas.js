@@ -1,7 +1,6 @@
 const contenedor = document.querySelector('#contenedor');
 const botoneraAgregar = document.querySelector('#botonera-agregar');
 const carpetaBase = '/paginas';
-const pgError = carpetaBase + 'error.html'
 
 const URLRUTAS = {
   INICIO: '/',
@@ -16,7 +15,8 @@ const URLRUTAS = {
   LISTAS: '/listas',
   LISTAS_FORM: '/listas/formulario',
   LOGIN: '/login',
-  REGISTRO: '/registro'
+  REGISTRO: '/registro',
+  ERROR: '/error'
 };
 
 const rutas = {
@@ -31,6 +31,7 @@ const rutas = {
   [URLRUTAS.LISTAS_FORM]: carpetaBase + '/formulario.html',
   [URLRUTAS.LOGIN]: carpetaBase + '/formulario.html',
   [URLRUTAS.REGISTRO]: carpetaBase + '/formulario.html',
+  [URLRUTAS.ERROR]: carpetaBase + '/error.html',
 }
 
 async function cargarRuta() {
@@ -49,7 +50,8 @@ async function cargarRuta() {
     contenedor.innerHTML = html;
     generarPantalla(rutaVerif);
   } catch (er) {
-    contenedor.innerHTML = pgError;
+    contenedor.innerHTML = URLRUTAS.ERROR;
+    cargarError(er);
     console.log(er);
   }
 }
@@ -100,33 +102,39 @@ const verificarRutasDinamicas = (path) => {
   return { newPath, idRubro, idProveedor, idSelect }
 }
 
-const generarPantalla = (rutaVerif) => {
-  switch (rutaVerif.newPath) {
-    case URLRUTAS.INICIO: cargarInicio();
+async function generarPantalla(rutaVerif){
+  try{
+
+    switch (rutaVerif.newPath) {
+      case URLRUTAS.INICIO: cargarInicio();
       break;
-    case URLRUTAS.PRODUCTOS: mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
+      case URLRUTAS.PRODUCTOS: mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
       break;
-    case URLRUTAS.PRODUCTOS_FORM: nuevoProducto(rutaVerif.idSelect);
+      case URLRUTAS.PRODUCTOS_FORM: nuevoProducto(rutaVerif.idSelect);
       break
-    case URLRUTAS.PROVEEDORES: mostrarProveedores();
+      case URLRUTAS.PROVEEDORES: mostrarProveedores();
       break;
-    case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
+      case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
       break
-    case URLRUTAS.RUBROS:{
-      agregarScript(RUTASCRIPT.RUBRO);      
-      mostrarRubros()
-    } 
+      case URLRUTAS.RUBROS: {
+        await agregarScript({...RUTASCRIPT.RUBRO});
+        await mostrarRubros();
+      }
       break;
-    case URLRUTAS.RUBROS_FORM: nuevoRubro(rutaVerif.idSelect);
+      case URLRUTAS.RUBROS_FORM: nuevoRubro(rutaVerif.idSelect);
       break;
-    case URLRUTAS.LISTAS: {
-      mostrarListas();
-    };
+      case URLRUTAS.LISTAS: {
+        mostrarListas();
+      };
       break;
-    case URLRUTAS.LOGIN: login();
+      case URLRUTAS.LOGIN: login();
       break;
-    case URLRUTAS.REGISTRO: registro();
+      case URLRUTAS.REGISTRO: registro();
       break;
+    }
+  } catch (er) {
+    contenedor.innerHTML = URLRUTAS.ERROR;
+    cargarError(er);
   }
 }
 

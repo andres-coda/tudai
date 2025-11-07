@@ -81,19 +81,32 @@ const crearBtnDesplegable = (id, eliminarDato, url) => {
   return divBotoneraFlecha;
 }
 
-
-function agregarScript({src, id}, callback) {
-   if (document.getElementById(id)) {
-    callback?.();
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.src = src;
-  script.id = id;
-  script.onload = () => callback?.();
-  document.body.appendChild(script);
+const cargarError = (error) => {
+  console.log('Error', error)
+  const errorP = document.querySelector('#errorP');
+  errorP.textContent = error;
 }
+
+async function agregarScript({ src, id }) {
+  const existente = document.querySelector(`#${id}`);
+  if (existente) return;
+
+  try {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.id = id;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Error al cargar script: ${src}`));
+      document.body.appendChild(script);
+    });
+  } catch (er) {
+    contenedor.innerHTML = URLRUTAS.ERROR;
+    cargarError(er);
+    console.error(er);
+  }
+}
+
 
 
 function quitarScript(id) {

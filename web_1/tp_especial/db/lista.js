@@ -229,7 +229,7 @@ const proveedores = [
     ]
   }
 ];
-
+/*
 const rubros = [
   { id: '01', nombre: 'Verduras de hoja' },
   { id: '02', nombre: 'Verduras de fruto' },
@@ -244,7 +244,7 @@ const rubros = [
   { id: '11', nombre: 'Frutas del bosque' },
   { id: '12', nombre: 'Hierbas aromáticas' },
 ];
-
+*/
 const productos = [
   { id: '001', nombre: 'Lechuga', rubro: '01' },
   { id: '002', nombre: 'Espinaca', rubro: '01' },
