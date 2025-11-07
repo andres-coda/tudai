@@ -11,12 +11,11 @@ async function mostrarRubros() {
   });
   try {
     if (rubros.length == 0) {
-      await agregarScript({ ...RUTASCRIPT.RUBRO_ADAPTER });
-      await rubrosGet();
+      rubros = await rubrosGet();
     }
     rubros.forEach(p => {
       const elemento = document.createElement('li');
-      elemento.id = p.id;
+      elemento.id = `rubro-${p.id}`;
       elemento.textContent = p.nombre;
 
       const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarRubro, URLRUTAS.RUBROS_FORM);
@@ -30,16 +29,38 @@ async function mostrarRubros() {
       })
     })
     contenedor.innerHTML = '';
-    contenedor.appendChild(ul);
+    if (rubros.length == 0) {
+      contenedor.appendChild(listaVacia('rubros'));
+    } else {
+      contenedor.appendChild(ul);
+    }
 
   } catch (er) {
-    contenedor.innerHTML = URLRUTAS.ERROR;
     cargarError(er);
   }
 
 }
 
-const funcionEliminarRubro = () => { };
+async function funcionEliminarRubro(id) {
+  try {
+    const respuesta = await fetchGenerico(
+      RUTAAPI.RUBRO + '/' + id,
+      null,
+      METODOS_FETCH.DELETE,
+      null
+    )
+    if (respuesta.error) {
+      throw new Error('No se pudo eliminar el rubro, ' + respuesta.error);
+    }
+    rubros = rubros.filter(r => r.id != id);
+
+    const li = document.querySelector(`#rubro-${id}`);
+    console.log('... li ...', li)
+    if (li) li.remove();
+  } catch (er) {
+    cargarError(er);
+  }
+};
 
 const nuevoRubro = (id) => {
   let rubro = null;
@@ -68,8 +89,9 @@ async function rubroFetch(id = null) {
   const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
 
-  console.log('ruta', ruta)
   try {
+    await agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
+    await agregarScript(RUTASCRIPT.VERIFICAR);
     const respuesta = await fetchGenerico(
       ruta,
       rubroDto(),
@@ -78,6 +100,7 @@ async function rubroFetch(id = null) {
     );
 
     if (respuesta.error) {
+      console.log('respuesta ', respuesta.error)
       throw new Error(respuesta.error)
     }
     if (respuesta.res) {
@@ -87,31 +110,36 @@ async function rubroFetch(id = null) {
       } else {
         rubros.push(respuesta.res);
       }
-      quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
+      quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
+      quitarScript(RUTASCRIPT.VERIFICAR.id);
       window.location.hash = `${URLRUTAS.RUBROS}`;
     }
 
   } catch (er) {
-    console.log(er);
+    cargarError(`${er.message}`);
+  } finally {
+    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
   }
 }
 
-async function rubrosGet() {
+async function rubrosGet(id) {
+  const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   try {
+    await agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
+    const adapter = id ? rubroAdapter : rubroAdapterArray;
     const respuesta = await fetchGenerico(
-      RUTAAPI.RUBRO,
+      ruta,
       null,
       METODOS_FETCH.GET,
-      rubroAdapterArray,
+      adapter,
     );
     if (respuesta.error) {
       throw new Error(respuesta.error)
     }
-    if (respuesta.res) {
-      rubros = respuesta.res;
-    }
+    return respuesta.res;
   } catch (er) {
-    contenedor.innerHTML = URLRUTAS.ERROR;
     cargarError(er);
+  } finally {
+    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
   }
 } 

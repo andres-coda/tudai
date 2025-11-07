@@ -30,7 +30,7 @@ const crearForm = () => {
 const datosInput = (input, label, textLabel, nombre, requerido, dato) => {
   input.id = nombre;
   input.name = nombre;
-  if(input.type == 'date' && dato){
+  if (input.type == 'date' && dato) {
     const fecha = new Date(dato);
     input.value = fecha.toISOString().split('T')[0];
   } else {
@@ -115,53 +115,28 @@ const selecId = (array) => {
   return id.toString();
 }
 
-const efectoModal = (newTexto) => {
-  const modalInterno = document.querySelector('#modal-contenido');
-  const texto = document.createElement('p');
-  texto.textContent = newTexto;
-  modalInterno.innerHTML = '';
-  texto.classList.add('error');
-  modalInterno.appendChild(texto);
+async function guardarRegistro(formulario) {
+  const ruta = window.location.hash.slice(1) || '/';
 
-}
+  const rutaVerif = verificarRutasDinamicas(ruta);
+  try {
 
-const guardarRegistro = (formulario) => {
-  const ruta =window.location.hash.slice(1) || '/';
+    switch (rutaVerif.newPath) {
+      case URLRUTAS.LOGIN: loginFetch();
+        break;
+      case URLRUTAS.RUBROS_FORM: await rubroFetch(rutaVerif.idSelect);
+        break;
+      case URLRUTAS.PROVEEDORES_FORM: await proveedorFetch(rutaVerif.idSelect);
+        break;
+      case URLRUTAS.PRODUCTOS_FORM: await productoFetch(rutaVerif.idSelect)
+      case URLRUTAS.LISTAS_FORM:
+        guardarLista(rutaVerif.idSelect);
+        break;
 
-  const rutaVerif = verificarRutasDinamicas(ruta)
-
-  modal.classList.add('visble')
-  switch (rutaVerif.newPath) {
-    case URLRUTAS.LOGIN: loginFetch();
-      break;
-    case URLRUTAS.RUBROS_FORM: rubroFetch(rutaVerif.selecId);
-      break;
-    case URLRUTAS.PROVEEDORES_FORM:
-      const nuevoProveedor = guardarProveedor(rutaVerif.idSelect);
-      if (nuevoProveedor) {
-        efectoModal(`Se creó el proveedor ${nuevoProveedor.nombre} correctamente`);
-        formulario.reset();
-      }
-      break;
-    case URLRUTAS.PRODUCTOS_FORM:
-      const nuevoProducto = guardarProducto(rutaVerif.idSelect);
-      if (nuevoProducto) {
-        efectoModal(`Se creó el producto ${nuevoProducto.nombre} correctamente`);
-        formulario.reset();
-      }
-      break;
-    case URLRUTAS.RUBROS_FORM:
-      const nuevoRubro = guardarRubro(rutaVerif.idSelect);
-      if (nuevoRubro) {
-        efectoModal(`Se creó el rubro ${nuevoRubro.nombre} correctamente`);
-        formulario.reset();
-      }
-      break;
-    case URLRUTAS.LISTAS_FORM:
-      guardarLista(rutaVerif.idSelect);
-      break;
-
-    default: console.log('no hay tipo')
-      break;
+      default: console.log('no hay tipo')
+        break;
+    }
+  } catch (er) {
+    cargarError(er);
   }
 }

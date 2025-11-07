@@ -232,7 +232,7 @@ img {
   object-fit: contain;
 }
 
-#cabecera {
+header {
   display: flex;
   flex-direction: row;
   position: relative;

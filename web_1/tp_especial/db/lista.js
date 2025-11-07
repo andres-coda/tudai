@@ -91,7 +91,7 @@ const lista = [
     estado: "enviado"
   }
 ];
-
+/*
 const proveedores = [
   {
     id: '00',
@@ -229,6 +229,8 @@ const proveedores = [
     ]
   }
 ];
+
+*/
 /*
 const rubros = [
   { id: '01', nombre: 'Verduras de hoja' },
@@ -245,6 +247,7 @@ const rubros = [
   { id: '12', nombre: 'Hierbas aromáticas' },
 ];
 */
+/*
 const productos = [
   { id: '001', nombre: 'Lechuga', rubro: '01' },
   { id: '002', nombre: 'Espinaca', rubro: '01' },
@@ -285,3 +288,4 @@ const productos = [
   { id: '037', nombre: 'Orégano', rubro: '10' },
   { id: '038', nombre: 'Menta', rubro: '10' }
 ];
+*/

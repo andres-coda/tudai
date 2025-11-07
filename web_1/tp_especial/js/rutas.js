@@ -32,6 +32,7 @@ const rutas = {
   [URLRUTAS.LOGIN]: carpetaBase + '/formulario.html',
   [URLRUTAS.REGISTRO]: carpetaBase + '/formulario.html',
   [URLRUTAS.ERROR]: carpetaBase + '/error.html',
+  [URLRUTAS.ERROR]: carpetaBase + '/cargando.html',
 }
 
 async function cargarRuta() {
@@ -50,7 +51,6 @@ async function cargarRuta() {
     contenedor.innerHTML = html;
     generarPantalla(rutaVerif);
   } catch (er) {
-    contenedor.innerHTML = URLRUTAS.ERROR;
     cargarError(er);
     console.log(er);
   }
@@ -108,15 +108,23 @@ async function generarPantalla(rutaVerif){
     switch (rutaVerif.newPath) {
       case URLRUTAS.INICIO: cargarInicio();
       break;
-      case URLRUTAS.PRODUCTOS: mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
+      case URLRUTAS.PRODUCTOS: {
+        await agregarScript(RUTASCRIPT.PRODUCTO);
+        await mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
+      }
       break;
-      case URLRUTAS.PRODUCTOS_FORM: nuevoProducto(rutaVerif.idSelect);
+      case URLRUTAS.PRODUCTOS_FORM: { 
+        await nuevoProducto(rutaVerif.idSelect);
+      }
       break
-      case URLRUTAS.PROVEEDORES: mostrarProveedores();
+      case URLRUTAS.PROVEEDORES: {       
+        await agregarScript({...RUTASCRIPT.PROV});
+        mostrarProveedores()
+      };
       break;
       case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
       break
-      case URLRUTAS.RUBROS: {
+      case URLRUTAS.RUBROS: {        
         await agregarScript({...RUTASCRIPT.RUBRO});
         await mostrarRubros();
       }
@@ -133,8 +141,7 @@ async function generarPantalla(rutaVerif){
       break;
     }
   } catch (er) {
-    contenedor.innerHTML = URLRUTAS.ERROR;
-    cargarError(er);
+    cargarError(er.message);
   }
 }
 

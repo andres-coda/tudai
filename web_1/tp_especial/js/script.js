@@ -81,10 +81,31 @@ const crearBtnDesplegable = (id, eliminarDato, url) => {
   return divBotoneraFlecha;
 }
 
-const cargarError = (error) => {
-  console.log('Error', error)
-  const errorP = document.querySelector('#errorP');
-  errorP.textContent = error;
+const efectoModal = (newTitulo, newTexto) => {
+  const modalInterno = document.querySelector('#modal-contenido'); 
+  modal.classList.add('visble')
+  modalInterno.innerHTML = '';
+  if(newTitulo){
+    const titulo = document.createElement('h2');
+    titulo.textContent = newTitulo;
+    modalInterno.appendChild(titulo);
+  }
+  const texto = document.createElement('p');
+  texto.textContent = newTexto;
+  texto.classList.add('error');
+  modalInterno.appendChild(texto);
+}
+
+const cargarError = (error) => { 
+  console.log(error)
+  const titulo = 'Error al intentar realizar la accion';
+  efectoModal(titulo, error);
+}
+
+const listaVacia = (entidad) => {
+  const p = document.createElement('p');
+  p.textContent = `La lista de ${entidad} esta vacia`;
+  return p;
 }
 
 async function agregarScript({ src, id }) {

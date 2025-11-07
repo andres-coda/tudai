@@ -3,7 +3,7 @@ body.claro {
   color: black
 }
 
-body.claro header,
+body.claro nav,
 body.claro #menu {
   background-color: #30411d;
   color: white;
@@ -76,7 +76,7 @@ body.oscuro {
   color: #e8e5bd;
 }
 
-body.oscuro header,
+body.oscuro nav,
 body.oscuro #menu {
   background-color: #b58f3d;
   color: black;
