@@ -38,6 +38,7 @@ const loginDto = () => {
 async function loginFetch() {
 	try{
     await agregarScript(RUTASCRIPT.LOGIN_ADAPTER);
+	await agregarScript(RUTASCRIPT.VERIFICAR)
     localStorage.setItem('token','');
 		const respuesta = await fetchGenerico(
       RUTAAPI.LOGIN, 
@@ -56,5 +57,6 @@ async function loginFetch() {
     cargarError(`${er.message}`);
   } finally {
     quitarScript(RUTASCRIPT.LOGIN_ADAPTER.id);
+	quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }

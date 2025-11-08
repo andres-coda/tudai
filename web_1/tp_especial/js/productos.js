@@ -37,6 +37,7 @@ async function mostrarProductos(idProveedor, idRubro) {
     }
 
     if(productos.length != 0){
+      console.log('--- Productos --- : ',productos)
       productos.map(p => mostrarProductoIndividual(p, tbody, idProveedor, idRubro));
     }
 
@@ -55,13 +56,13 @@ const mostrarProductoIndividual = (p, tbody, proveedor, rubro) => {
 
   if (!rubro) {
     const tdRubro = fila.insertCell();
-    tdRubro.textContent = p.rubro.nombre;
+    tdRubro.textContent = p.rubro?.nombre;
   }
 
   if (!proveedor) {
     const proveedor = fila.insertCell();
     const nombresProveedores = [];
-    p.proveedor.map(prov => {
+    p.proveedor?.map(prov => {
       nombresProveedores.push(prov.nombre);
     });
     proveedor.textContent = nombresProveedores.join(', ');
@@ -81,7 +82,7 @@ async function funcionEliminarProducto(id) {
     if (respuesta.error) {
       throw new Error('No se pudo eliminar el producto, ' + respuesta.error);
     }
-    proveedores = proveedores.filter(p => p.id != id);
+    productos = productos.filter(p => p.id != id);
 
     const tr = document.querySelector(`#prod-${id}`);
     if (tr) tr.remove();
@@ -130,32 +131,29 @@ async function productoFetch(id) {
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
   try {
     await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
+    await agregarScript(RUTASCRIPT.VERIFICAR);
     const respuesta = await fetchGenerico(
       ruta,
       productoDto(),
       method,
-      productoAdaptador,
+      productoAdapter,
     );
     if (respuesta.error) {
       console.log('respuesta ', respuesta.error)
       throw new Error(respuesta.error)
     }
-    return respuesta.res;
-  } catch (er) {
-    cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id)
-  }
-
-  if (respuesta.error) { return }
-  if (respuesta.res) {
     const index = productos.findIndex(p => p.id === respuesta.res.id);
     if (index != -1) {
       productos[index] = respuesta.res;
     } else {
       productos.push(respuesta.res);
+      window.location.hash = `${URLRUTAS.PRODUCTOS}`;
     }
-    window.location.hash = `${URLRUTAS.PRODUCTOS}`;
+  } catch (er) {
+    cargarError(er);
+  } finally {
+    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
+    quitarScript(RUTASCRIPT.VERIFICAR);
   }
 }
 
@@ -166,7 +164,7 @@ async function productoGet(id) {
     const adapter = id ? productoAdapter : productoAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
-      productoDto(),
+      null,
       METODOS_FETCH.GET,
       adapter,
     );
