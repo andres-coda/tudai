@@ -94,7 +94,7 @@ const provDto = () => {
   }
 
   const productosCheck = document.querySelectorAll('.input-check:checked');
-  const productosIds = Array.from(productosCheck).map(checkbox => checkbox.value);
+  const productosIds = Array.from(productosCheck).map(checkbox => Number(checkbox.value));
 
   const dto = {
     nombre: nombre.value,
