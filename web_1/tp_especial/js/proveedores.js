@@ -63,17 +63,23 @@ async function funcionEliminarProveedor(id) {
   }
 };
 
-const nuevoProeveedor = (id) => {
+async function nuevoProeveedor(id){
   let prov = null;
   if (id) {
     prov = proveedores.find(p => p.id == id);
   }
-  const form = crearForm();
-  titulo.textContent = 'Nuevo proveedor';
-  form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
-  form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', false, 'email', prov?.email), form.botonera);
-  form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
-  form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
+  try{
+    await agregarScript(RUTASCRIPT.PRODUCTO)
+    const productos = await productoGet();
+    const form = crearForm();
+    titulo.textContent = 'Nuevo proveedor';
+    form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
+    form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', false, 'email', prov?.email), form.botonera);
+    form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
+    form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
+  } catch (er) {
+    cargarError(er);
+  }
 }
 
 const provDto = () => {
