@@ -8,7 +8,7 @@ async function mostrarProductos(idProveedor, idRubro) {
     window.location.hash = `${URLRUTAS.PRODUCTOS_FORM}`;
   });
 
-  const titulos = ['Nombre'];
+  const titulos = ['Unidad','Nombre'];
   if (!idRubro) {
     titulos.push('Rubro');
   }
@@ -19,26 +19,23 @@ async function mostrarProductos(idProveedor, idRubro) {
   crearTituloTabla(titulos);
 
   try {
-    let proveedor = null;
-    let rubro = null;
     if (idProveedor) {
       await agregarScript({ ...RUTASCRIPT.PROV });
-      proveedor = await proveedorGet(idProveedor);
+      const proveedor = await proveedorGet(idProveedor);
       productos = proveedor.productos;
       titulo.textContent += ` de ${proveedor.nombre}`;
     }
     if (idRubro) {
       await agregarScript({ ...RUTASCRIPT.RUBRO });
-      rubro = await rubrosGet(idRubro);
+      const rubro = await rubrosGet(idRubro);
       productos = rubro.productos;
     }
     if ((!idRubro && !idProveedor)) {
       productos = await productoGet();
     }
 
-    if(productos.length != 0){
-      console.log('--- Productos --- : ',productos)
-      productos.map(p => mostrarProductoIndividual(p, tbody, idProveedor, idRubro));
+    if (productos.length != 0) {
+      productos.map(p => tbody.appendChild(mostrarProductoIndividual(p, idProveedor, idRubro, true)));
     }
 
   } catch (er) {
@@ -47,28 +44,31 @@ async function mostrarProductos(idProveedor, idRubro) {
   }
 }
 
-const mostrarProductoIndividual = (p, tbody, proveedor, rubro) => {
-  const fila = tbody.insertRow();
+const mostrarProductoIndividual = (p, proveedor, rubro, botonDesplegable) => {
+  const fila = document.createElement('tr');
   fila.id = `prod-${p.id}`;
+  
+    const unidad = fila.insertCell();
+    unidad.textContent = p.unidad;
 
   const nombre = fila.insertCell();
   nombre.textContent = p.nombre;
 
   if (!rubro) {
     const tdRubro = fila.insertCell();
-    tdRubro.textContent = p.rubro?.nombre;
+    tdRubro.textContent = p.rubro;
   }
 
   if (!proveedor) {
     const proveedor = fila.insertCell();
-    const nombresProveedores = [];
-    p.proveedor?.map(prov => {
-      nombresProveedores.push(prov.nombre);
-    });
-    proveedor.textContent = nombresProveedores.join(', ');
+    proveedor.textContent = p.proveedores.join(', ');
   }
-  const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProducto, URLRUTAS.PRODUCTOS_FORM);
-  fila.appendChild(subMenuEdit);
+
+  if (botonDesplegable) {
+    const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProducto, URLRUTAS.PRODUCTOS_FORM);
+    fila.appendChild(subMenuEdit);
+  }
+  return fila;
 }
 
 async function funcionEliminarProducto(id) {
@@ -102,6 +102,7 @@ async function nuevoProducto(id) {
     const form = crearForm();
     titulo.textContent = 'Nuevo producto';
     form.formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true, null, producto ? producto.nombre : null), form.botonera);
+    form.formulario.insertBefore(crearInput('Unidad de compra: ', 'unidad', true, null, producto ? producto.unidad : null), form.botonera);
     form.formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false, producto && producto.rubro), form.botonera);
   } catch (er) {
     cargarError(`${er.message}`);
@@ -113,15 +114,17 @@ async function nuevoProducto(id) {
 const productoDto = () => {
   const nombre = document.querySelector('#nombre');
   const rubro = document.querySelector('#rubro');
+  const unidad = document.querySelector('#unidad');
 
-  const verificado = verificarProducto(nombre.value, rubro.value);
+  const verificado = verificarProducto(nombre.value, rubro.value, unidad.value);
   if (verificado) {
     efectoModal(`Error: ${verificado}`);
     return;
   }
   const dto = {
     nombre: nombre.value,
-    rubro: rubro.value
+    rubro: rubro.value,
+    unidad: unidad.value
   }
   return dto;
 }
@@ -159,7 +162,7 @@ async function productoFetch(id) {
 
 async function productoGet(id) {
   const ruta = id ? RUTAAPI.PRODUCTO + '/' + id : RUTAAPI.PRODUCTO;
- try {
+  try {
     await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? productoAdapter : productoAdapterArray;
     const respuesta = await fetchGenerico(

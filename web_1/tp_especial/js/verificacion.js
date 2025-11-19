@@ -1,6 +1,8 @@
-const verificarProducto = (nombre, rubro) => {
+const verificarProducto = (nombre, rubro, unidad) => {
   if (!nombre) return 'El producto requiere nombre';
   if (nombre.length < 2 || nombre.length > 50) return 'El nombre del producto debe tener entre 2 y 50 caracteres';
+  if (!unidad) return 'El producto requiere unidad';
+  if (unidad.length < 2 || unidad.length > 50) return 'La unidad debe tener entre 2 y 50 caracteres';
   if (!rubro) return 'El producto requiere un rubro';
   return null;
 }

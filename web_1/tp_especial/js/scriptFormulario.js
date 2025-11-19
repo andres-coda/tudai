@@ -1,20 +1,12 @@
 "use strict"
-const crearFormulario = () => {
-  const formulario = document.querySelector('form');
-  const tipo = sessionStorage.getItem('tipo') || '';
-  return {
-    formulario, botonera, guardar, atras, cerrar, modal,
-    modalInterno, tipo,
-  }
-}
 
-const crearForm = () => {
+const crearForm = (sig) => {
   const guardar = document.querySelector('.btn-guardar');
   const formulario = document.querySelector('form');
   const atras = document.querySelector('.btn-atras');
   const botonera = document.querySelector('.botonera');
 
-  guardar.value = 'Guardar';
+  guardar.value = sig ? 'Siguiente': 'Guardar';
 
   formulario.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -33,7 +25,8 @@ const datosInput = (input, label, textLabel, nombre, requerido, dato) => {
   if (input.type == 'date' && dato) {
     const fecha = new Date(dato);
     input.value = fecha.toISOString().split('T')[0];
-  } else {
+  } 
+  if ((input.type != 'date' && dato) || input.type != 'checkbox'){
     input.value = dato || '';
   }
   input.required = requerido;
@@ -104,18 +97,7 @@ const crearCheckBox = (textLabel, nombre, listaElementos, datos) => {
 }
 
 
-
-const selecId = (array) => {
-  let id = 0;
-  array.forEach(e => {
-    if (Number(e.id) > id) {
-      id = Number(e.id) + 1
-    }
-  });
-  return id.toString();
-}
-
-async function guardarRegistro(formulario) {
+async function guardarRegistro() {
   const ruta = window.location.hash.slice(1) || '/';
 
   const rutaVerif = verificarRutasDinamicas(ruta);
@@ -128,9 +110,9 @@ async function guardarRegistro(formulario) {
         break;
       case URLRUTAS.PROVEEDORES_FORM: await proveedorFetch(rutaVerif.idSelect);
         break;
-      case URLRUTAS.PRODUCTOS_FORM: await productoFetch(rutaVerif.idSelect)
-      case URLRUTAS.LISTAS_FORM:
-        guardarLista(rutaVerif.idSelect);
+      case URLRUTAS.PRODUCTOS_FORM: await productoFetch(rutaVerif.idSelect);
+        break;
+      case URLRUTAS.LISTAS_FORM: await nuevoPedidoIndividual(rutaVerif.idSelect)
         break;
 
       default: console.log('no hay tipo')

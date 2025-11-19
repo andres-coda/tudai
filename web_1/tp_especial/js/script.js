@@ -128,8 +128,6 @@ async function agregarScript({ src, id }) {
   }
 }
 
-
-
 function quitarScript(id) {
   const script = document.getElementById(id);
   if (script) {

@@ -1,14 +1,16 @@
-const rutaBaseApi = 'http://localhost:8080/api/'
+const rutaBaseApi = 'http://localhost:3030/'
 const RUTAAPI = {
-    REGISTRO : rutaBaseApi+'auth/register',
+    REGISTRO : rutaBaseApi+'user',
     LOGIN : rutaBaseApi+'auth/login',
-    PRODUCTO: rutaBaseApi+'productos-particulares',
-    PROV: rutaBaseApi+'proveedores',
-    RUBRO : rutaBaseApi+'rubros-particulares'
+    PRODUCTO: rutaBaseApi+'producto',
+    PROV: rutaBaseApi+'proveedor',
+    RUBRO : rutaBaseApi+'rubro',
+    LISTA : rutaBaseApi+'pedido'
 }
 
 const RUTASCRIPT = {
   
+  INICIO : { id : 'inicioScript', src : 'js/inicio.js'},
   LOGIN_ADAPTER : { id : 'loginAdapter', src : 'adaptadores/login.adapter.js'},
   PRODUCTO_ADAPTER : { id : 'productoAdapter', src : 'adaptadores/producto.adapter.js'},
   PRODUCTO : { id : 'productoScript', src : 'js/productos.js'},
@@ -16,6 +18,8 @@ const RUTASCRIPT = {
   PROV : { id : 'proveedorScript', src : 'js/proveedores.js'},
   RUBRO_ADAPTER : { id : 'rubroAdapter', src : 'adaptadores/rubro.adapter.js'},
   RUBRO : { id : 'rubroScript', src : 'js/rubros.js'},
+  LISTA_ADAPTER : { id : 'listaAdapter', src : 'adaptadores/lista.adapter.js'},
+  LISTA : { id : 'listaScript', src : 'js/listas.js'},
   VERIFICAR : { id : 'verificarScript', src : 'js/verificacion.js'},
 }
 
@@ -29,6 +33,7 @@ const METODOS_FETCH ={
 
 async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET, adaptador=null) {
   const token = localStorage.getItem('token');
+  
   let error = '';
   let res;
 

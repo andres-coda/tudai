@@ -110,15 +110,15 @@ async function rubroFetch(id = null) {
       } else {
         rubros.push(respuesta.res);
       }
-      quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
-      quitarScript(RUTASCRIPT.VERIFICAR.id);
       window.location.hash = `${URLRUTAS.RUBROS}`;
     }
 
   } catch (er) {
     cargarError(`${er.message}`);
   } finally {
-    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
+    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
+    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
+    quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }
 
@@ -126,6 +126,7 @@ async function rubrosGet(id) {
   const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   try {
     await agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
+    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? rubroAdapter : rubroAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -140,6 +141,7 @@ async function rubrosGet(id) {
   } catch (er) {
     cargarError(er);
   } finally {
-    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id)
+    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
+    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
   }
 } 

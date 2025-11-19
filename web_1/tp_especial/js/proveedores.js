@@ -63,12 +63,12 @@ async function funcionEliminarProveedor(id) {
   }
 };
 
-async function nuevoProeveedor(id){
+async function nuevoProeveedor(id) {
   let prov = null;
   if (id) {
     prov = proveedores.find(p => p.id == id);
   }
-  try{
+  try {
     await agregarScript(RUTASCRIPT.PRODUCTO)
     const productos = await productoGet();
     const form = crearForm();
@@ -79,6 +79,8 @@ async function nuevoProeveedor(id){
     form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
   } catch (er) {
     cargarError(er);
+  } finally {
+    quitarScript(RUTASCRIPT.PRODUCTO.id)
   }
 }
 
@@ -94,7 +96,7 @@ const provDto = () => {
   }
 
   const productosCheck = document.querySelectorAll('.input-check:checked');
-  const productosIds = Array.from(productosCheck).map(checkbox => Number(checkbox.value));
+  const productosIds = Array.from(productosCheck).map(checkbox => checkbox.value);
 
   const dto = {
     nombre: nombre.value,
@@ -111,6 +113,7 @@ async function proveedorFetch(id = null) {
 
   try {
     await agregarScript(RUTASCRIPT.VERIFICAR);
+    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const respuesta = await fetchGenerico(
       ruta,
       provDto(),
@@ -127,20 +130,23 @@ async function proveedorFetch(id = null) {
       } else {
         proveedores.push(respuesta.res);
       }
-      quitarScript(RUTASCRIPT.PROV_ADAPTER.id);
-      quitarScript(RUTASCRIPT.VERIFICAR.id);
       window.location.hash = `${URLRUTAS.PROVEEDORES}`;
     }
 
   } catch (er) {
     cargarError(`${er.message}`);
+  } finally {
+    quitarScript(RUTASCRIPT.PROV_ADAPTER.id);
+    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
+    quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }
 
 async function proveedorGet(id) {
   const ruta = id ? RUTAAPI.PROV + '/' + id : RUTAAPI.PROV;
   try {
-    await agregarScript(RUTASCRIPT.PROV_ADAPTER)
+    await agregarScript(RUTASCRIPT.PROV_ADAPTER);
+    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? proveedorAdapter : proveedorAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -152,11 +158,11 @@ async function proveedorGet(id) {
       throw new Error(respuesta.error)
     }
 
-      return respuesta.res;
+    return respuesta.res;
   } catch (er) {
     cargarError(er);
-  } finally{
-    quitarScript(RUTASCRIPT.PROV_ADAPTER.id)
-
+  } finally {
+    quitarScript(RUTASCRIPT.PROV_ADAPTER.id);
+    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
   }
 } 
