@@ -1,25 +1,31 @@
-const listaDefault = {
-  id: '',
-  fecha: '',
-  estado: '',
-  proveedor: '',
-  productos: [],
+const listaDefault = () => {
+  return {
+    id: '',
+    fecha: '',
+    estado: '',
+    proveedor: '',
+    telefono: '',
+    productos: [],
+  };
 }
 
-const listaProductoDefault = {
-  id: '',
-  producto: '',
-  cantidad: '',
-  unidad: '',
-}
+const listaProductoDefault = () => {
+  return {
+    id: '',
+    producto: '',
+    cantidad: '',
+    unidad: '',
+  };
+};
 
 const listaAdapter = (res) => {
-  if (!res) return listaDefault;
+  if (!res) return listaDefault();
   const lista = {
     id: res.id,
     fecha: res.fecha,
     estado: res.estado,
     proveedor: res.proveedor?.nombre || '',
+    telefono: res.proveedor?.telefono || '',
     productos: listaProdAdapterArray(res.pedidos_productos)
   }
   return lista;
@@ -31,7 +37,7 @@ const listaAdapterArray = (res) => {
 }
 
 const listaProductoAdapter = (res) => {
-  if (!res) return listaProductoDefault;
+  if (!res) return listaProductoDefault();
   const listaProd = {
     id: res.id,
     nombre: res.producto?.nombre || '',

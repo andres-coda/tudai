@@ -7,6 +7,7 @@ const crearForm = (sig) => {
   const botonera = document.querySelector('.botonera');
 
   guardar.textContent = sig ? 'Siguiente': 'Guardar';
+  guardar.value = sig ? 'Siguiente': 'Guardar';
 
   formulario.addEventListener('submit', function (e) {
     e.preventDefault();

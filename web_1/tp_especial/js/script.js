@@ -135,7 +135,7 @@ function quitarScript(id) {
   }
 }
 
-const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, typeBtnAdelante) => {
+const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, btnAtrasText) => {
   const guardar = document.createElement('button')
   guardar.classList.add('btn-guardar');
 
@@ -147,14 +147,14 @@ const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, typeBtnAd
 
   
   guardar.textContent = btnAdelanteText ? btnAdelanteText : 'Guardar';
-  atras.textContent = 'atras';
+  atras.textContent = btnAtrasText ? btnAtrasText : 'Atras';
   
   atras.addEventListener('click',(e)=> {
     e.preventDefault();
     funcionAtras();
   });
   
-  guardar.addEventListener(typeBtnAdelante || 'click', (e)=>{
+  guardar.addEventListener('click', (e)=>{
     e.preventDefault();
     funcionAdelante();
   });

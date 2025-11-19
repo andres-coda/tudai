@@ -21,6 +21,7 @@ const RUTASCRIPT = {
   LISTA_ADAPTER: { id: 'listaAdapter', src: 'adaptadores/lista.adapter.js' },
   LISTA: { id: 'listaScript', src: 'js/listas.js' },
   VERIFICAR: { id: 'verificarScript', src: 'js/verificacion.js' },
+  ENVIAR: { id: 'enviarScript', src: 'js/enviarLista.js' }
 }
 
 

@@ -1,6 +1,6 @@
-let listas = [];
 
 async function mostrarListas() {
+  let listas = await JSON.parse(sessionStorage.getItem('listas')) || [];
   const tbody = document.querySelector('#tabla tbody');
   titulo.textContent = 'Pedidos';
   const btn = crearBtnAgregar();
@@ -14,6 +14,7 @@ async function mostrarListas() {
   try {
     if (listas.length == 0) {
       listas = await listaGet();
+      sessionStorage.setItem('listas', JSON.stringify(listas))
     }
     listas.forEach(p => {
       const fila = tbody.insertRow();
@@ -45,6 +46,7 @@ async function mostrarListas() {
 
 async function funcionEliminarLista(id) {
   try {
+    let listas = await JSON.parse(sessionStorage.getItem('listas'));
     const respuesta = await fetchGenerico(
       RUTAAPI.LISTA + '/' + id,
       null,
@@ -58,17 +60,20 @@ async function funcionEliminarLista(id) {
 
     const tr = document.querySelector(`#lista-${id}`);
     if (tr) tr.remove();
+
+    sessionStorage.setItem('listas', JSON.stringify(listas))
   } catch (er) {
     cargarError(er);
   }
 };
 
 async function nuevaLista(id) {
-  let pedido = null;
-  if (id) {
-    pedido = listas.find(l => l.id == id);
-  }
   try {
+    let listas = await JSON.parse(sessionStorage.getItem('listas'));
+    let pedido = null;
+    if (id) {
+      pedido = listas.find(l => l.id == id);
+    }
     await agregarScript(RUTASCRIPT.PROV)
     const proveedores = await proveedorGet()
     const form = crearForm(true);
@@ -83,9 +88,9 @@ async function nuevaLista(id) {
   }
 }
 
-async function nuevoPedidoIndividual() {
+async function nuevoPedidoIndividual(id) {
   try {
-    const pedido = JSON.parse(sessionStorage.getItem('pedidoActual'));
+    const pedido = await JSON.parse(sessionStorage.getItem('pedidoActual'));
 
     if (!pedido) {
       throw new Error("No hay pedido cargado. Volvé a Nueva Lista.");
@@ -115,11 +120,12 @@ async function nuevoPedidoIndividual() {
       tbody.appendChild(fila);
     })
 
-    contenedor.appendChild(crearBotonera(
-      () => listaFetch(),
+    const botonera = crearBotonera(
+      () => listaFetch(id),
       () => window.history.back(),
       'Guardar',
-    ));
+    );
+    contenedor.appendChild(botonera);
 
   } catch (er) {
     cargarError(`${er.message}`);
@@ -153,7 +159,6 @@ const listaPedidoDto = () => {
   const productosCelda = document.querySelectorAll('.celda-cantidad');
   const productosDto = [];
   productosCelda.forEach(pc => {
-    console.log('<<<--- Productos --->>>', pc.value)
     if (Number(pc.value) > 0) {
       productosDto.push({
         producto: pc.id,
@@ -181,6 +186,8 @@ async function listaFetch(id = null) {
   try {
     await agregarScript(RUTASCRIPT.VERIFICAR);
     await agregarScript(RUTASCRIPT.LISTA_ADAPTER);
+    
+    let listas = await JSON.parse(sessionStorage.getItem('listas'));
     const respuesta = await fetchGenerico(
       ruta,
       listaPedidoDto(),
@@ -190,15 +197,14 @@ async function listaFetch(id = null) {
     if (respuesta.error) {
       throw new Error(respuesta.error)
     }
-    if (respuesta.res) {
-      const index = listas.findIndex(p => p.id === respuesta.res.id);
-      if (index != -1) {
-        listas[index] = respuesta.res;
-      } else {
-        listas.push(respuesta.res);
-      }
-      window.location.hash = `${URLRUTAS.LISTA}`;
-    }
+    const index = listas.findIndex(p => p.id === respuesta.res.id);
+    if (index != -1) {
+      listas[index] = respuesta.res;
+    } else {
+      listas.push(respuesta.res);
+    }    
+    sessionStorage.setItem('listas', JSON.stringify(listas))
+    window.location.hash = `${URLRUTAS.PEDIDO}/${respuesta.res.id}`;
   } catch (er) {
     cargarError(`${er.message}`);
   } finally {
@@ -310,15 +316,29 @@ async function mostrarPedidoIndividual(id) {
     const titulos = ['Unidad', 'Producto', 'rubro', 'Cantidad'];
     crearTituloTabla(titulos);
     await agregarScript(RUTASCRIPT.PRODUCTO)
+    await agregarScript(RUTASCRIPT.ENVIAR)
     pedido.productos.map(p => {
       const fila = mostrarProductoIndividual(p, true, false, false);
       const celda = fila.insertCell();
       celda.textContent = p.cantidad;
       tbody.appendChild(fila);
-    })
+    });
+
+    const botonera = crearBotonera(
+      () => {
+        const msj = armarMensajePedido(pedido);
+        enviarPedidoWhatsApp(pedido.telefono, msj);
+      },
+      () => nuevaLista(id),
+      'Enviar',
+      'Editar'
+    );
+
+    contenedor.appendChild(botonera);
   } catch (er) {
     cargarError(er);
-  } finally{
-    quitarScript(RUTASCRIPT.PRODUCTO.id)
+  } finally {
+    quitarScript(RUTASCRIPT.PRODUCTO.id);
+    quitarScript(RUTASCRIPT.ENVIAR.id);
   }
 }

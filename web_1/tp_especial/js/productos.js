@@ -155,8 +155,8 @@ async function productoFetch(id) {
       productos[index] = respuesta.res;
     } else {
       productos.push(respuesta.res);
-      window.location.hash = `${URLRUTAS.PRODUCTOS}`;
     }
+    window.location.hash = `${URLRUTAS.PRODUCTOS}`;
   } catch (er) {
     cargarError(er);
   } finally {

@@ -1,13 +1,15 @@
-const productoDefault = {
-  id: '',
-  nombre: '',
-  unidad:'',
-  rubro: '',
-  proveedores: []
-}
+const productoDefault =()=>{
+  return {
+    id: '',
+    nombre: '',
+    unidad:'',
+    rubro: '',
+    proveedores: []
+  }
+} 
 
 const productoAdapter = (res) => {
-  if (!res) return productoDefault;
+  if (!res) return productoDefault();
   const proveedores = res.proveedores?.map(p => p.nombre) || [];
   const producto = {
     id: res.id,

@@ -64,19 +64,17 @@ async function funcionEliminarProveedor(id) {
 };
 
 async function nuevoProeveedor(id) {
-  let prov = null;
-  if (id) {
-    prov = proveedores.find(p => p.id == id);
-  }
   try {
     await agregarScript(RUTASCRIPT.PRODUCTO)
+    const prov = await proveedorGet(id)
     const productos = await productoGet();
+    const datos = prov.productos?.map(p => p.id) || [];
     const form = crearForm();
     titulo.textContent = 'Nuevo proveedor';
     form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
     form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', false, 'email', prov?.email), form.botonera);
     form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
-    form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, prov?.productos), form.botonera);
+    form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, datos), form.botonera);
   } catch (er) {
     cargarError(er);
   } finally {
@@ -123,16 +121,14 @@ async function proveedorFetch(id = null) {
     if (respuesta.error) {
       throw new Error(respuesta.error)
     }
-    if (respuesta.res) {
-      const index = proveedores.findIndex(p => p.id === respuesta.res.id);
-      if (index != -1) {
-        proveedores[index] = respuesta.res;
-      } else {
-        proveedores.push(respuesta.res);
-      }
-      window.location.hash = `${URLRUTAS.PROVEEDORES}`;
+    const index = proveedores.findIndex(p => p.id === respuesta.res.id);
+    if (index != -1) {
+      proveedores[index] = respuesta.res;
+    } else {
+      proveedores.push(respuesta.res);
     }
-
+    
+    window.location.hash = `${URLRUTAS.PROVEEDORES}`;
   } catch (er) {
     cargarError(`${er.message}`);
   } finally {

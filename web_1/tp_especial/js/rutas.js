@@ -18,7 +18,7 @@ const URLRUTAS = {
   LISTAS: '/listas',
   LISTAS_FORM: '/listas/formulario',
   LISTA_PEDIDO: '/listas/pedidos',
-  PEDIDO: '/listas/pedido',
+  PEDIDO: '/listas/pedido-muestra',
   LOGIN: '/login',
   REGISTRO: '/registro',
   ERROR: '/error'
