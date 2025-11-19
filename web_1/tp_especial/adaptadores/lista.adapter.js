@@ -3,13 +3,14 @@ const listaDefault = {
   fecha: '',
   estado: '',
   proveedor: '',
+  productos: [],
 }
 
 const listaProductoDefault = {
   id: '',
   producto: '',
   cantidad: '',
-  unidad:'',
+  unidad: '',
 }
 
 const listaAdapter = (res) => {
@@ -30,17 +31,18 @@ const listaAdapterArray = (res) => {
 }
 
 const listaProductoAdapter = (res) => {
-  if(!res) return listaProductoDefault;
+  if (!res) return listaProductoDefault;
   const listaProd = {
     id: res.id,
-    producto: res.producto?.nombre || '',
+    nombre: res.producto?.nombre || '',
+    rubro: res.producto?.rubro?.nombre || '',
     cantidad: res.cantidad,
-    unidad:res.producto?.unidad || '',
+    unidad: res.producto?.unidad || '',
   }
   return listaProd;
 }
 
-const listaProdAdapterArray=(res) => {
+const listaProdAdapterArray = (res) => {
   if (!res || res.length === 0) return []
   return res.map(l => listaProductoAdapter(l));
 }

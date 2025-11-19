@@ -6,7 +6,7 @@ const crearForm = (sig) => {
   const atras = document.querySelector('.btn-atras');
   const botonera = document.querySelector('.botonera');
 
-  guardar.value = sig ? 'Siguiente': 'Guardar';
+  guardar.textContent = sig ? 'Siguiente': 'Guardar';
 
   formulario.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -112,9 +112,10 @@ async function guardarRegistro() {
         break;
       case URLRUTAS.PRODUCTOS_FORM: await productoFetch(rutaVerif.idSelect);
         break;
-      case URLRUTAS.LISTAS_FORM: await nuevoPedidoIndividual(rutaVerif.idSelect)
+      case URLRUTAS.LISTAS_FORM: pasarPedido(rutaVerif.idSelect);
         break;
-
+      case URLRUTAS.LISTA_PEDIDO: listaFetch(rutaVerif.idSelect);
+        break;
       default: console.log('no hay tipo')
         break;
     }
@@ -122,3 +123,5 @@ async function guardarRegistro() {
     cargarError(er);
   }
 }
+
+

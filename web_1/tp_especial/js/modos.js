@@ -32,7 +32,6 @@ menuBtn.addEventListener('click', function () {
 })
 
 menu.addEventListener('click', function () {
-
   menu.classList.remove('activo');
 })
 

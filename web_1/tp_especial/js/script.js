@@ -134,3 +134,37 @@ function quitarScript(id) {
     script.remove();
   }
 }
+
+const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, typeBtnAdelante) => {
+  const guardar = document.createElement('button')
+  guardar.classList.add('btn-guardar');
+
+  const atras = document.createElement('button');
+  atras.classList.add('btn-atras');
+
+  const botonera = document.createElement('div')
+  botonera.classList.add('botonera');
+
+  
+  guardar.textContent = btnAdelanteText ? btnAdelanteText : 'Guardar';
+  atras.textContent = 'atras';
+  
+  atras.addEventListener('click',(e)=> {
+    e.preventDefault();
+    funcionAtras();
+  });
+  
+  guardar.addEventListener(typeBtnAdelante || 'click', (e)=>{
+    e.preventDefault();
+    funcionAdelante();
+  });
+  
+  botonera.appendChild(atras);
+  botonera.appendChild(guardar);
+  return botonera;
+}
+
+const formatearFechaLocal=(fechaISO) =>{
+  const [anio, mes, dia] = fechaISO.split('T')[0].split('-');
+  return `${dia}/${mes}/${anio}`;
+}

@@ -8,7 +8,7 @@ async function mostrarProductos(idProveedor, idRubro) {
     window.location.hash = `${URLRUTAS.PRODUCTOS_FORM}`;
   });
 
-  const titulos = ['Unidad','Nombre'];
+  const titulos = ['Unidad', 'Nombre'];
   if (!idRubro) {
     titulos.push('Rubro');
   }
@@ -44,12 +44,17 @@ async function mostrarProductos(idProveedor, idRubro) {
   }
 }
 
+/*<<<------------
+  Muestra la tabla de productos.
+  Filtra por proveedor o rubro si recibe parámetros.
+ ------------>>>*/
+
 const mostrarProductoIndividual = (p, proveedor, rubro, botonDesplegable) => {
   const fila = document.createElement('tr');
   fila.id = `prod-${p.id}`;
-  
-    const unidad = fila.insertCell();
-    unidad.textContent = p.unidad;
+
+  const unidad = fila.insertCell();
+  unidad.textContent = p.unidad;
 
   const nombre = fila.insertCell();
   nombre.textContent = p.nombre;

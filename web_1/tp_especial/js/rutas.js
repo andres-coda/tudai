@@ -2,7 +2,9 @@ const contenedor = document.querySelector('#contenedor');
 const botoneraAgregar = document.querySelector('#botonera-agregar');
 const carpetaBase = '/paginas';
 
-/* ------- Constante para guardar las rutas del navegador ------- */
+/*<<<------------ 
+  Constante para guardar las rutas del navegador 
+------------>>>*/
 const URLRUTAS = {
   INICIO: '/',
   PRODUCTOS: '/productos',
@@ -16,12 +18,15 @@ const URLRUTAS = {
   LISTAS: '/listas',
   LISTAS_FORM: '/listas/formulario',
   LISTA_PEDIDO: '/listas/pedidos',
+  PEDIDO: '/listas/pedido',
   LOGIN: '/login',
   REGISTRO: '/registro',
   ERROR: '/error'
 };
 
-/* ------- Constante para guardar las rutas interna de carpetas y archivos ------- */
+/*<<<------------
+  Constante para guardar las rutas interna de carpetas y archivos 
+------------>>> */
 const rutas = {
   [URLRUTAS.INICIO]: carpetaBase + '/inicio.html',
   [URLRUTAS.PRODUCTOS]: carpetaBase + '/tabla.html',
@@ -33,16 +38,19 @@ const rutas = {
   [URLRUTAS.LISTAS]: carpetaBase + '/tabla.html',
   [URLRUTAS.LISTAS_FORM]: carpetaBase + '/formulario.html',
   [URLRUTAS.LISTA_PEDIDO]: carpetaBase + '/tabla.html',
+  [URLRUTAS.PEDIDO]: carpetaBase + '/tabla.html',
   [URLRUTAS.LOGIN]: carpetaBase + '/formulario.html',
   [URLRUTAS.REGISTRO]: carpetaBase + '/formulario.html',
   [URLRUTAS.ERROR]: carpetaBase + '/error.html',
   [URLRUTAS.ERROR]: carpetaBase + '/cargando.html',
 }
 
-/* ------- Metodo que convina las dos constantes anteriores, 
-          llama al metodo para verificar rutas,  
-          y llama al metodo para generar la pantalla 
-          tambien maneja errores                            ------- */
+/*<<<------------
+  Metodo que convina las dos constantes anteriores, 
+  llama al metodo para verificar rutas,  
+  y llama al metodo para generar la pantalla 
+  tambien maneja errores  
+ ------------>>>*/
 
 async function cargarRuta() {
   const path = window.location.hash.slice(1) || '/';
@@ -65,11 +73,11 @@ async function cargarRuta() {
   }
 }
 
-/* ------- Metodo para verificar rutas del navegador
-           y si tienen elementos como id los guarda en un objeto para despues manipularlo, 
-          le entra la url del navegador y devuelve una nueva url que es la que debe usarse
-          para crear la pantalla, idSeleccionado si es que hay, y tambien el id de rubro o provedor
-          requerido para mostrar productos                           ------- */
+/*<<<------------
+  Procesa rutas con segmentos dinámicos (IDs)
+  y devuelve la ruta base + parámetros detectados.
+ ------------>>>*/
+
 
 const verificarRutasDinamicas = (path) => {
   let idRubro = null;
@@ -111,21 +119,28 @@ const verificarRutasDinamicas = (path) => {
     idSelect = partes[3];
     newPath = URLRUTAS.LISTAS_FORM;
   }
-  if(path.startsWith(URLRUTAS.LISTA_PEDIDO)){
+  if (path.startsWith(URLRUTAS.LISTA_PEDIDO)) {
     const partes = path.split('/');
     idSelect = partes[3];
     newPath = URLRUTAS.LISTA_PEDIDO;
+  }
+  if (path.startsWith(URLRUTAS.PEDIDO)) {
+    const partes = path.split('/');
+    idSelect = partes[3];
+    newPath = URLRUTAS.PEDIDO;
   }
 
   return { newPath, idRubro, idProveedor, idSelect }
 }
 
-/* ------- Metodo que recive el objeto verificado por la ruta, 
-          y crea la pantalla que corresponde,
-          para eso carga los script que la pantalla creada requiera ------- */
+/* <<<------------
+  Metodo que recive el objeto verificado por la ruta, 
+  y crea la pantalla que corresponde,
+  para eso carga los script que la pantalla creada requiera 
+ ------------>>>*/
 
-async function generarPantalla(rutaVerif){
-  try{
+async function generarPantalla(rutaVerif) {
+  try {
 
     switch (rutaVerif.newPath) {
       case URLRUTAS.INICIO: {
@@ -138,44 +153,49 @@ async function generarPantalla(rutaVerif){
         await mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
         break;
       }
-      case URLRUTAS.PRODUCTOS_FORM: { 
+      case URLRUTAS.PRODUCTOS_FORM: {
         await nuevoProducto(rutaVerif.idSelect);
         break
       }
-      case URLRUTAS.PROVEEDORES: {       
-        await agregarScript({...RUTASCRIPT.PROV});
+      case URLRUTAS.PROVEEDORES: {
+        await agregarScript({ ...RUTASCRIPT.PROV });
         mostrarProveedores()
         break;
       };
       case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
-      break
-      case URLRUTAS.RUBROS: {        
-        await agregarScript({...RUTASCRIPT.RUBRO});
+        break
+      case URLRUTAS.RUBROS: {
+        await agregarScript({ ...RUTASCRIPT.RUBRO });
         await mostrarRubros();
         break;
       }
       case URLRUTAS.RUBROS_FORM: nuevoRubro(rutaVerif.idSelect);
-      break;
-      case URLRUTAS.LISTAS: {        
-        await agregarScript({...RUTASCRIPT.LISTA});
+        break;
+      case URLRUTAS.LISTAS: {
+        await agregarScript({ ...RUTASCRIPT.LISTA });
         await mostrarListas();
         break;
       };
       case URLRUTAS.LISTAS_FORM: nuevaLista(rutaVerif.idSelect);
-      break;
+        break;
       case URLRUTAS.LISTA_PEDIDO: {
-        await agregarScript({...RUTASCRIPT.LISTA});
+        await agregarScript({ ...RUTASCRIPT.LISTA });
         await nuevoPedidoIndividual(rutaVerif.idSelect)
         break;
       }
+      case URLRUTAS.PEDIDO: {
+        await agregarScript({ ...RUTASCRIPT.LISTA });
+        await mostrarPedidoIndividual(rutaVerif.idSelect)
+        break;
+      }
       case URLRUTAS.LOGIN: login();
-      break;
+        break;
       case URLRUTAS.REGISTRO: registro();
-      break;
+        break;
     }
   } catch (er) {
     cargarError(er.message);
-  } finally{
+  } finally {
     quitarScript(RUTASCRIPT.INICIO.id);
     quitarScript(RUTASCRIPT.LISTA.id);
     quitarScript(RUTASCRIPT.RUBRO.id);
