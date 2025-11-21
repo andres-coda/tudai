@@ -1,22 +1,20 @@
 "use strict"
 
 const crearForm = (sig) => {
-  const guardar = document.querySelector('.btn-guardar');
+  botoneraAgregar().innerHTML = '';
+  const guardar = document.querySelector('#btn-form-guardar');
   const formulario = document.querySelector('form');
-  const atras = document.querySelector('.btn-atras');
-  const botonera = document.querySelector('.botonera');
+  const botonera = document.querySelector('.botonera-form');
 
-  guardar.textContent = sig ? 'Siguiente': 'Guardar';
-  guardar.value = sig ? 'Siguiente': 'Guardar';
+  guardar.textContent = sig ? 'Siguiente' : 'Guardar';
+  guardar.value = sig ? 'Siguiente' : 'Guardar';
 
   formulario.addEventListener('submit', function (e) {
     e.preventDefault();
     guardarRegistro(formulario);
   });
-  atras.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.history.back();
-  });
+
+  crearBtnAtras();
   return { formulario, botonera };
 }
 
@@ -26,8 +24,8 @@ const datosInput = (input, label, textLabel, nombre, requerido, dato) => {
   if (input.type == 'date' && dato) {
     const fecha = new Date(dato);
     input.value = fecha.toISOString().split('T')[0];
-  } 
-  if ((input.type != 'date' && dato) || input.type != 'checkbox'){
+  }
+  if ((input.type != 'date' && dato) || input.type != 'checkbox') {
     input.value = dato || '';
   }
   input.required = requerido;
@@ -100,9 +98,8 @@ const crearCheckBox = (textLabel, nombre, listaElementos, datos) => {
 
 async function guardarRegistro() {
   const ruta = window.location.hash.slice(1) || '/';
-
-  const rutaVerif = verificarRutasDinamicas(ruta);
   try {
+    const rutaVerif = await verificarRutasDinamicas(ruta);
 
     switch (rutaVerif.newPath) {
       case URLRUTAS.LOGIN: loginFetch();

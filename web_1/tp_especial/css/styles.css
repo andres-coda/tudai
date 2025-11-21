@@ -16,16 +16,17 @@ footer {
   margin: 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   justify-content: flex-end;
+  align-items: center;
   width: 100%;
-  padding: .5rem auto;
+  padding: 0;
   box-sizing: border-box;
 }
-
-footer {
-  padding: .5rem;
+footer{
+  padding: 1rem 1.5rem;
+  justify-content: flex-start;
 }
+
 
 #contenedor {
   display: flex;
@@ -47,12 +48,13 @@ a {
   text-decoration: none;
   color: inherit;
   font-size: large;
-  padding: .5rem;
+  padding: 1.5rem .5rem;
   flex: 1;
   cursor: pointer;
   text-align: center;
   border-radius: 5px;
   border: none;
+  height: 100%;
 }
 
 a:hover,
@@ -92,8 +94,8 @@ table td {
   box-sizing: border-box;
 }
 
-table tbody tr td:nth-last-child(2) {
-  padding-right: 2rem;
+table tbody tr td:first-child {
+  padding-left: 2rem;
 }
 
 .clickeable {
@@ -127,20 +129,22 @@ li {
 }
 
 button,
-.btn-guardar {
+.btn-agregar {
   width: 40px;
   height: 40px;
   border-radius: 20px;
   cursor: pointer;
   font-size: larger;
+  border: none;
+  border-color:none;
 }
 
 .btn-icono {
   box-shadow: none;
   border: none;
-  width: 25px;
-  height: 25px;
-  font-size: 0.8em;
+  width: 35px;
+  height: 35px;
+  font-size: 1.2em;
   transition: transform 0.3s ease;
 }
 
@@ -158,9 +162,10 @@ button:hover,
   height: 36px;
   display: none;
   border-radius: 5px;
+  box-shadow: none;
   border: none;
-  padding: .1rem;
-  margin: .2rem;
+  padding: 0;
+  margin: 1rem;
   box-sizing: border-box;
 }
 
@@ -176,12 +181,18 @@ button:hover,
   translate: 0 -20px;
   right: 2rem;
 }
+#botonera-atras {
+  position: absolute;
+  top: 50%;
+  translate: 0 -20px;
+  left: 2rem;
+}
 
 .botonera-flecha-contenedor {
   position: absolute;
   z-index: 10;
   top: 45%;
-  right: .3rem;
+  left: 0;
   transform: translateY(-50%);
   display: flex;
   flex-direction: row;
@@ -196,15 +207,33 @@ button:hover,
   justify-content: center;
   align-items: center;
   padding: 0 .5rem;
+  border-radius: 5px;
   gap:.5rem;
+  background-color: var(--hover);
+}
+
+.botonera-flecha .btn-icono{
+  background-color: var(--fondo-celda);
 }
 
 .btn-icono:hover{
-  scale: 1.5;
+  scale: 1.1;
 }
 
 .botonera-flecha:not(.oculto) {
   animation: fadeIn 0.5s ease;
+}
+
+.perfil{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 1rem;
+  box-sizing: border-box;
 }
 
 .div-img {
@@ -291,6 +320,15 @@ header {
   gap: 2rem;
 }
 
+table thead th {
+  height: 40px;
+}
+
+table td {
+  height: 40px;
+}
+
+
 .celda-cantidad{
   margin: 0;
   padding: 0;
@@ -317,6 +355,31 @@ header {
   width: 100%;
   box-sizing: border-box;  
 }
+.card{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 20px;
+  background-color: var(--fondo-celda);
+  padding: .5rem;
+  box-sizing: border-box;
+}
+.div-vertical{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: .5rem;
+  justify-content: space-around;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+.div-vertical p, 
+.div-vertical h2{
+  padding: 0;
+  margin: 0;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -364,3 +427,4 @@ header {
     display: flex;
   }
 }
+

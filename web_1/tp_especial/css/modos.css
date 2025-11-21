@@ -1,143 +1,108 @@
-body.claro {
-  background-color: beige;
-  color: black
+:root {
+  --font-base: "Nunito", sans-serif;
+  --fondo-app: #1e3006;
+  --hover: #ffe787;
+  --texto: #f3f2ea;
+  --texto-secundario: black;
+  --fondo-boton: #dbbb3c;
+  --fondo-celda: #4c6135;
+}
+body.claro{
+  --fondo-app: #f5ebe1;
+  --hover: #11461d;
+  --texto: black;
+  --texto-secundario: black;
+  --fondo-boton: #44743c;
+  --fondo-celda: #fdfcf5;
 }
 
-body.claro nav,
-body.claro #menu {
-  background-color: #30411d;
-  color: white;
+body, button {
+  font-family: var(--fuente-base);
 }
 
-body.claro a:hover,
-body.claro a:focus {
-  background-color: #836628;
-  color: black;
+
+body {
+  background-color: var(--fondo-app);
+  color: var(--texto);
 }
 
-body.claro a:active {
-  background-color: #90763e;
-  color: black;
+body nav,
+body #menu {
+  background-color: var(--fondo-boton);
+  color: var(--fondo-app);
 }
 
-body.claro table {
-  border: 2px solid black;
+body a:hover,
+body a:focus {
+  background-color: var(--hover);
+  color: var(--texto);
 }
 
-body.claro .clickeable:hover {
-  box-shadow: 1px 1px 1px black;
+body a:active {
+  background-color: var(--hover);
+  color: var(--texto-secundario);
 }
 
-body.claro table thead th {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
+body .clickeable:hover {
+  color: var(--texto-secundario);
 }
 
-body.claro table td {
-  border-bottom: 1px dashed black;
-  border-right: 1px solid black;
+body table thead th {
+  background-color: var(--fondo-celda);
 }
 
-body.claro li {
-  box-shadow: 1px 1px 1px black;
-}
-
-body.claro button,
-body.claro .btn-guardar {
-  background-color: #11461d;
-  color: white;
-  box-shadow: 2px 2px 2px black;
-}
-
-body.claro #menu-hamburguesa {
-  background-color: #30411d;
-}
-
-body.claro #menu-hamburguesa svg {
-  color: #c8c8b2;
-}
-
-body.claro .btn-atras,
-body.claro .btn-icono {
-  background-color: gainsboro;
-  color: black;
-}
-
-body.claro .ul-checkbox {
-  color: black;
-  border: 1px solid black;
+body table td {
+  background-color: var(--fondo-celda);
 }
 
 
 
-body.oscuro {
-  background-color: #253c30;
-  color: #e8e5bd;
+body button,
+body .btn-guardar,
+body .btn-agregar {
+  background-color: var(--fondo-boton);
+  color: var(--fondo-app);
 }
 
-body.oscuro nav,
-body.oscuro #menu {
-  background-color: #b58f3d;
-  color: black;
+body button:active,
+body .btn-guardar:active,
+body .btn-agregar:active {
+  background-color: var(--hover);
 }
 
-body.oscuro a:hover,
-body.oscuro a:focus {
-  background-color: #30411d;
-  color: beige;
+body #menu-hamburguesa {
+  background-color: var(--fondo-boton);
 }
 
-body.oscuro a:active {
-  background-color: #90763e;
-  color: black;
+body #menu-hamburguesa svg {
+  color: var(--texto);
 }
 
-body.oscuro table {
-  border: 2px solid #d1e3c2;
+body .btn-atras,
+body .btn-icono {
+  background-color: transparent;
+  color: var(--hover);
+  border: none;
+  box-shadow: none;
 }
 
-body.oscuro .clickeable:hover {
-  box-shadow: 1px 1px 1px #d1e3c2;
+body .ul-checkbox {
+  color: var(--texto-secundario);
+  border: 1px solid var(--texto-secundario);
 }
 
-body.oscuro table thead th {
-  border-top: 1px solid #d1e3c2;
-  border-bottom: 1px solid #d1e3c2;
-  border-right: 1px solid #d1e3c2;
-}
+@media(width <=700px) {
 
-body.oscuro table td {
-  border-bottom: 1px dashed #d1e3c2;
-  border-right: 1px solid #d1e3c2;
-}
+  body nav {
+    background-color: var(--fondo-app);
+    color: var(--texto);
+  }
 
-body.oscuro li {
-  box-shadow: 1px 1px 1px #d1e3c2;
-}
+  body #menu-hamburguesa {
+    background-color: var(--fondo-app);
+  }
 
-body.oscuro button,
-body.oscuro .btn-guardar {
-  background-color: #b58f3d;
-  color: black;
-  box-shadow: 2px 2px 2px #80927e;
-}
-
-body.oscuro .btn-atras,
-body.claro .btn-icono {
-  background-color: gainsboro;
-  color: black;
-}
-
-body.oscuro input {
-  border: 1px solid rgb(190, 190, 174);
-}
-
-body.oscuro label {
-  color: beige;
-}
-
-body.oscuro .ul-checkbox {
-  color: beige;
-  border: 1px solid beige;
+  body #menu-hamburguesa svg {
+    color: var(--texto);
+  }
 }

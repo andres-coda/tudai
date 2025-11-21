@@ -64,11 +64,17 @@ select {
 }
 
 .btn-guardar,
-.btn-atras {
+.btn-atras,
+.btn-secundario {
   border-radius: 20px;
   padding: 0 1rem;
   font-size: large;
-  flex: 1;
+}
+.btn-secundario {
+  box-shadow: 1px 1px 1px var(--texto);
+  background-color: var(--text);
+  color: var(--app-fondo);
+  width: 100%;
 }
 
 #btn-cerrar {
@@ -145,6 +151,14 @@ select {
   text-decoration: line-through;
 }
 
+.botonera-form {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media(max-width:750px) {
   form {
     width: 95vw;
@@ -157,4 +171,26 @@ select {
     gap: .2rem;
     flex-direction: column;
   }
+}
+
+@media(width <=400px) {
+  .botonera {
+    display: flex;
+    flex-direction: column;
+    gap:.5rem;
+  }
+
+  .botonera-form {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+
+  .btn-guardar,
+  .btn-atras {
+    flex: none;
+    height: 40px;
+    width: 100%;
+  }
+
 }

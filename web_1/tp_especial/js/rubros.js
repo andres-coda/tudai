@@ -1,17 +1,34 @@
-let rubros = [];
+const leerRubroSesionStorage = () => {
+  const aux  = sessionStorage.getItem('rubros')
+  const rubros = aux ? JSON.parse(aux) : [] ;
+  return rubros;
+}
+
+const editarRubros = (rubros) => {
+  let aux = null;
+  if(rubros && rubros.length > 0){
+    aux = rubros
+  };
+  sessionStorage.setItem('rubros', JSON.stringify(aux))
+}
 
 async function mostrarRubros() {
   const ul = document.createElement('ul');
   ul.id = 'lista';
-  titulo.textContent = 'Rubros';
+  titulo().textContent = 'Rubros';
 
   const btn = crearBtnAgregar();
   btn.addEventListener('click', () => {
     window.location.hash = `${URLRUTAS.RUBROS_FORM}`;
   });
+  btn.title = 'Nuevo rubro';
+  let rubros = leerRubroSesionStorage();
+  console.log('<<<--- rubros --->>>', rubros)
   try {
     if (rubros.length == 0) {
       rubros = await rubrosGet();
+  console.log('<<<--- rubros --->>>', rubros)
+      editarRubros(rubros);
     }
     rubros.forEach(p => {
       const elemento = document.createElement('li');
@@ -28,11 +45,11 @@ async function mostrarRubros() {
         window.location.hash = `${URLRUTAS.PRODUCTOS_RUBRO}/${p.id}`;
       })
     })
-    contenedor.innerHTML = '';
+    contenedor().innerHTML = '';
     if (rubros.length == 0) {
-      contenedor.appendChild(listaVacia('rubros'));
+      contenedor().appendChild(listaVacia('rubros'));
     } else {
-      contenedor.appendChild(ul);
+      contenedor().appendChild(ul);
     }
 
   } catch (er) {
@@ -43,6 +60,7 @@ async function mostrarRubros() {
 
 async function funcionEliminarRubro(id) {
   try {
+    let rubros = leerRubroSesionStorage();
     const respuesta = await fetchGenerico(
       RUTAAPI.RUBRO + '/' + id,
       null,
@@ -53,9 +71,8 @@ async function funcionEliminarRubro(id) {
       throw new Error('No se pudo eliminar el rubro, ' + respuesta.error);
     }
     rubros = rubros.filter(r => r.id != id);
-
+    editarRubros(rubros);
     const li = document.querySelector(`#rubro-${id}`);
-    console.log('... li ...', li)
     if (li) li.remove();
   } catch (er) {
     cargarError(er);
@@ -63,12 +80,13 @@ async function funcionEliminarRubro(id) {
 };
 
 const nuevoRubro = (id) => {
+  const rubros = leerRubroSesionStorage();
   let rubro = null;
   if (id) {
     rubro = rubros.find(r => r.id == id);
   }
   const form = crearForm();
-  titulo.textContent = 'Nuevo rubro';
+  titulo().textContent = 'Nuevo rubro';
   form.formulario.insertBefore(crearInput('Nombre del rubro: ', 'nombre', true, null, rubro?.nombre), form.botonera);
 }
 
@@ -88,45 +106,33 @@ const rubroDto = () => {
 async function rubroFetch(id = null) {
   const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
-
+  console.log('fetch');
+  const rubros = leerRubroSesionStorage();
   try {
-    await agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
-    await agregarScript(RUTASCRIPT.VERIFICAR);
-    const respuesta = await fetchGenerico(
+    const res = await fetchGenerico(
       ruta,
       rubroDto(),
       method,
       rubroAdapter,
     );
 
-    if (respuesta.error) {
-      console.log('respuesta ', respuesta.error)
-      throw new Error(respuesta.error)
+    const index = rubros.findIndex(r => r.id === res.id);
+    if (index != -1) {
+      rubros[index] = res;
+    } else {
+      rubros.push(res);
     }
-    if (respuesta.res) {
-      const index = rubros.findIndex(r => r.id === respuesta.res.id);
-      if (index != -1) {
-        rubros[index] = respuesta.res;
-      } else {
-        rubros.push(respuesta.res);
-      }
-      window.location.hash = `${URLRUTAS.RUBROS}`;
-    }
+    editarRubros(rubros);
+    window.location.hash = `${URLRUTAS.RUBROS}`;
 
   } catch (er) {
     cargarError(`${er.message}`);
-  } finally {
-    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
-    quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }
 
 async function rubrosGet(id) {
   const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   try {
-    await agregarScript(RUTASCRIPT.RUBRO_ADAPTER);
-    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? rubroAdapter : rubroAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -134,14 +140,8 @@ async function rubrosGet(id) {
       METODOS_FETCH.GET,
       adapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
-    return respuesta.res;
+    return respuesta;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.RUBRO_ADAPTER.id);
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
   }
 } 

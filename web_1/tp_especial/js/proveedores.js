@@ -1,14 +1,84 @@
 let proveedores = [];
 
+async function crearCard(proveedor) {
+  try {
+    const resp = await fetch(rutas[URLRUTAS.PROVEEDORES]);
+    const html = await resp.text();
+
+    const temp = document.createElement("div");
+    temp.innerHTML = html.trim();
+
+    const card = temp.querySelector(".card");
+
+    const nombre = card.querySelector("#nombre");
+    nombre.textContent = proveedor.nombre;
+    nombre.removeAttribute('id');
+
+    const email = card.querySelector("#email");
+    email.textContent = proveedor.email;
+    email.removeAttribute('id');
+
+    const telefono = card.querySelector("#telefono");
+    telefono.textContent = proveedor.telefono;
+    telefono.removeAttribute('id');
+
+    const btnProd = card.querySelector("#btn-prod");
+    btnProd.removeAttribute('id');
+
+    const btnPedid = card.querySelector("#btn-pedid");
+    btnPedid.removeAttribute('id');
+
+    const editar = card.querySelector("#editar");
+    editar.removeAttribute('id');
+
+    btnPedid.addEventListener('click', () => {
+      window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${proveedor.id}`;
+    });
+    btnProd.addEventListener('click', () => {
+      window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${proveedor.id}`;
+    });
+    editar.addEventListener('click', () => {
+      window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}/${proveedor.id}`;
+    });
+
+    return card;
+  } catch (er) {
+    cargarError(er);
+  }
+}
+
+async function mostrarProveedoresCard() {
+  titulo().textContent = 'Proveedores';
+  const btn = crearBtnAgregar();
+  btn.addEventListener('click', () => {
+    window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}`;
+  });
+  
+  btn.title = 'Nuevo proveedor';
+  try {
+    if (proveedores.length == 0) {
+      proveedores = await proveedorGet();
+    }
+    contenedor().innerHTML='';
+    for (const prov of proveedores) {
+      const card = await crearCard(prov);
+      contenedor().appendChild(card);
+    }
+  } catch (er) {
+    cargarError(er);
+  }
+}
+
 async function mostrarProveedores() {
   const tbody = document.querySelector('#tabla tbody');
 
-  titulo.textContent = 'Proveedores';
+  titulo().textContent = 'Proveedores';
   const btn = crearBtnAgregar();
   btn.addEventListener('click', () => {
     window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}`;
   });
 
+  btn.title = 'Nuevo proveedor';
   const titulos = ['Proveedor', 'Email', 'Telefono'];
   crearTituloTabla(titulos);
   try {
@@ -65,21 +135,18 @@ async function funcionEliminarProveedor(id) {
 
 async function nuevoProeveedor(id) {
   try {
-    await agregarScript(RUTASCRIPT.PRODUCTO)
     const prov = await proveedorGet(id)
     const productos = await productoGet();
     const datos = prov.productos?.map(p => p.id) || [];
     const form = crearForm();
-    titulo.textContent = 'Nuevo proveedor';
+    titulo().textContent = 'Nuevo proveedor';
     form.formulario.insertBefore(crearInput('Nombre del proveedor: ', 'nombre', true, null, prov?.nombre), form.botonera);
     form.formulario.insertBefore(crearInput('Email del proveedor: ', 'email', false, 'email', prov?.email), form.botonera);
     form.formulario.insertBefore(crearInput('Telefono: ', 'telefono', true, null, prov?.telefono), form.botonera);
     form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, datos), form.botonera);
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PRODUCTO.id)
-  }
+  } 
 }
 
 const provDto = () => {
@@ -110,39 +177,29 @@ async function proveedorFetch(id = null) {
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
 
   try {
-    await agregarScript(RUTASCRIPT.VERIFICAR);
-    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const respuesta = await fetchGenerico(
       ruta,
       provDto(),
       method,
       proveedorAdapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
-    const index = proveedores.findIndex(p => p.id === respuesta.res.id);
+
+    const index = proveedores.findIndex(p => p.id === respuesta.id);
     if (index != -1) {
-      proveedores[index] = respuesta.res;
+      proveedores[index] = respuesta;
     } else {
-      proveedores.push(respuesta.res);
+      proveedores.push(respuesta);
     }
-    
+
     window.location.hash = `${URLRUTAS.PROVEEDORES}`;
   } catch (er) {
     cargarError(`${er.message}`);
-  } finally {
-    quitarScript(RUTASCRIPT.PROV_ADAPTER.id);
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
-    quitarScript(RUTASCRIPT.VERIFICAR.id);
-  }
+  } 
 }
 
 async function proveedorGet(id) {
   const ruta = id ? RUTAAPI.PROV + '/' + id : RUTAAPI.PROV;
   try {
-    await agregarScript(RUTASCRIPT.PROV_ADAPTER);
-    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? proveedorAdapter : proveedorAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -150,15 +207,10 @@ async function proveedorGet(id) {
       METODOS_FETCH.GET,
       adapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
+    if (!respuesta) throw new Error(respuesta.error);
 
-    return respuesta.res;
+    return respuesta;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PROV_ADAPTER.id);
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
-  }
+  } 
 } 

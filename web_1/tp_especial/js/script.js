@@ -1,43 +1,42 @@
 
-const agregar = document.querySelector('#nuevaLista');
-const titulo = document.querySelector('#titulo');
-const provederesNav = document.querySelector('#proveedores');
-const productosNav = document.querySelector('#productos');
-const listasNav = document.querySelector('#listas');
-
-const cerrar = document.querySelector('#btn-cerrar');
-cerrar.addEventListener('click', () => modal.classList.remove('visble'))
-const modal = document.querySelector('.modal');
-const modalInterno = document.querySelector('#modal-contenido');
+const titulo = ()=>{
+  return document.querySelector('#titulo');
+};
 
 const crearTituloTabla = (titulos) => {
   const thead = document.querySelector('#tabla thead');
   thead.innerHTML = '';
   const filaTitulo = document.createElement('tr');
-  titulos.forEach(titulo => {
+  titulos.forEach(tit => {
     const th = document.createElement('th');
-    th.textContent = titulo;
+    th.textContent = tit;
     filaTitulo.appendChild(th);
   });
   thead.appendChild(filaTitulo);
 }
 
-const listaSeleccion = (idElemento) => {
-  lista.map(p => {
-    if (p.id === idElemento) {
-      return
-    }
-  })
-}
-
 const crearBtnAgregar = () => {
-  botoneraAgregar.innerHTML = '';
+  botoneraAgregar().innerHTML = '';
   const btn = document.createElement('button');
   btn.id = 'nuevaLista';
-  btn.classList.add('agregar');
+  btn.classList.add('btn-agregar');
   btn.textContent = '+';
-  botoneraAgregar.appendChild(btn);
+  botoneraAgregar().appendChild(btn);
   return btn;
+}
+
+const crearBtnAtras = () => {
+  const botoneraAtras = document.querySelector('#botonera-atras')
+  botoneraAtras.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.id = 'atras';
+  btn.classList.add('btn-atras');
+  btn.innerHTML = '&#8610;';
+  botoneraAtras.appendChild(btn);
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.history.back();
+  });
 }
 
 const crearBtnDesplegable = (id, eliminarDato, url) => {
@@ -50,7 +49,7 @@ const crearBtnDesplegable = (id, eliminarDato, url) => {
 
   const btnDesplegar = document.createElement('button');
   btnDesplegar.classList.add('btn-icono');
-  btnDesplegar.innerHTML = '&#8249;';
+  btnDesplegar.innerHTML = '&#8250;';
   btnDesplegar.addEventListener('click', (e) => {
     e.stopPropagation();
     btnDesplegar.classList.toggle('flecha-abierta');
@@ -82,13 +81,17 @@ const crearBtnDesplegable = (id, eliminarDato, url) => {
 }
 
 const efectoModal = (newTitulo, newTexto) => {
-  const modalInterno = document.querySelector('#modal-contenido'); 
+  const modal = document.querySelector('.modal');
+  const cerrar = document.querySelector('#btn-cerrar');
+  cerrar.addEventListener('click', () => modal.classList.remove('visble'))
+  const modalInterno = document.querySelector('#modal-contenido');
+
   modal.classList.add('visble')
   modalInterno.innerHTML = '';
-  if(newTitulo){
-    const titulo = document.createElement('h2');
-    titulo.textContent = newTitulo;
-    modalInterno.appendChild(titulo);
+  if (newTitulo) {
+    const tit = document.createElement('h2');
+    tit.textContent = newTitulo;
+    modalInterno.appendChild(tit);
   }
   const texto = document.createElement('p');
   texto.textContent = newTexto;
@@ -96,10 +99,10 @@ const efectoModal = (newTitulo, newTexto) => {
   modalInterno.appendChild(texto);
 }
 
-const cargarError = (error) => { 
+const cargarError = (error) => {
   console.log(error)
-  const titulo = 'Error al intentar realizar la accion';
-  efectoModal(titulo, error);
+  const tit = 'Error al intentar realizar la accion';
+  efectoModal(tit, error);
 }
 
 const listaVacia = (entidad) => {
@@ -108,34 +111,8 @@ const listaVacia = (entidad) => {
   return p;
 }
 
-async function agregarScript({ src, id }) {
-  const existente = document.querySelector(`#${id}`);
-  if (existente) return;
-
-  try {
-    await new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.id = id;
-      script.onload = resolve;
-      script.onerror = () => reject(new Error(`Error al cargar script: ${src}`));
-      document.body.appendChild(script);
-    });
-  } catch (er) {
-    contenedor.innerHTML = URLRUTAS.ERROR;
-    cargarError(er);
-    console.error(er);
-  }
-}
-
-function quitarScript(id) {
-  const script = document.getElementById(id);
-  if (script) {
-    script.remove();
-  }
-}
-
 const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, btnAtrasText) => {
+  console.log(' funcionAtras ', funcionAtras)
   const guardar = document.createElement('button')
   guardar.classList.add('btn-guardar');
 
@@ -145,26 +122,65 @@ const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, btnAtrasT
   const botonera = document.createElement('div')
   botonera.classList.add('botonera');
 
-  
+
   guardar.textContent = btnAdelanteText ? btnAdelanteText : 'Guardar';
   atras.textContent = btnAtrasText ? btnAtrasText : 'Atras';
-  
-  atras.addEventListener('click',(e)=> {
+
+  atras.addEventListener('click', (e) => {
     e.preventDefault();
     funcionAtras();
   });
-  
-  guardar.addEventListener('click', (e)=>{
+
+  guardar.addEventListener('click', (e) => {
     e.preventDefault();
     funcionAdelante();
   });
-  
+
   botonera.appendChild(atras);
   botonera.appendChild(guardar);
   return botonera;
 }
 
-const formatearFechaLocal=(fechaISO) =>{
+const formatearFechaLocal = (fechaISO) => {
   const [anio, mes, dia] = fechaISO.split('T')[0].split('-');
   return `${dia}/${mes}/${anio}`;
+}
+
+/**
+ * Lee de localStorage de forma segura
+ * @param {string} key - Clave a leer
+ * @returns {any|null} Valor parseado o null
+ */
+function getLocalStorageSeguro(key) {
+  try {
+    const value = localStorage.getItem(key);
+    
+    // Validar que no sea string "null" o "undefined"
+    if (!value || value === 'null' || value === 'undefined') {
+      return null;
+    }
+    
+    return JSON.parse(value);
+  } catch (error) {
+    console.error(`Error leyendo ${key}:`, error);
+    localStorage.removeItem(key); // Limpiar dato corrupto
+    return null;
+  }
+}
+
+/**
+ * Guarda en localStorage de forma segura
+ * @param {string} key - Clave
+ * @param {any} value - Valor a guardar
+ */
+function setLocalStorageSeguro(key, value) {
+  try {
+    if (value === null || value === undefined) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (error) {
+    console.error(`Error guardando ${key}:`, error);
+  }
 }

@@ -2,28 +2,12 @@ const rutaBaseApi = 'http://localhost:3030/'
 const RUTAAPI = {
   REGISTRO: rutaBaseApi + 'user',
   LOGIN: rutaBaseApi + 'auth/login',
+  PERFIL: rutaBaseApi + 'auth/profile',
   PRODUCTO: rutaBaseApi + 'producto',
   PROV: rutaBaseApi + 'proveedor',
   RUBRO: rutaBaseApi + 'rubro',
-  LISTA: rutaBaseApi + 'pedido'
+  LISTA: rutaBaseApi + 'pedido',
 }
-
-const RUTASCRIPT = {
-
-  INICIO: { id: 'inicioScript', src: 'js/inicio.js' },
-  LOGIN_ADAPTER: { id: 'loginAdapter', src: 'adaptadores/login.adapter.js' },
-  PRODUCTO_ADAPTER: { id: 'productoAdapter', src: 'adaptadores/producto.adapter.js' },
-  PRODUCTO: { id: 'productoScript', src: 'js/productos.js' },
-  PROV_ADAPTER: { id: 'proveedorAdapter', src: 'adaptadores/proveedor.adapter.js' },
-  PROV: { id: 'proveedorScript', src: 'js/proveedores.js' },
-  RUBRO_ADAPTER: { id: 'rubroAdapter', src: 'adaptadores/rubro.adapter.js' },
-  RUBRO: { id: 'rubroScript', src: 'js/rubros.js' },
-  LISTA_ADAPTER: { id: 'listaAdapter', src: 'adaptadores/lista.adapter.js' },
-  LISTA: { id: 'listaScript', src: 'js/listas.js' },
-  VERIFICAR: { id: 'verificarScript', src: 'js/verificacion.js' },
-  ENVIAR: { id: 'enviarScript', src: 'js/enviarLista.js' }
-}
-
 
 const METODOS_FETCH = {
   GET: 'GET',
@@ -42,10 +26,7 @@ const METODOS_FETCH = {
  ------------>>> */
 
 async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET, adaptador = null) {
-  const token = localStorage.getItem('token');
-
-  let error = '';
-  let res;
+  const token = getLocalStorageSeguro('token');
 
   const headers = {};
 
@@ -56,7 +37,7 @@ async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET, adapta
   const opciones = {
     method: metodo.toUpperCase(),
     headers: {
-      ...headers,
+      ...headers,      
       'Content-Type': 'application/json'
     },
     body: (dto && metodo !== METODOS_FETCH.GET) ? JSON.stringify(dto) : undefined
@@ -72,20 +53,9 @@ async function fetchGenerico(url, dto = null, metodo = METODOS_FETCH.GET, adapta
 
     const aux = await respuesta.json().catch(() => null);
 
-    if (!adaptador) {
-      res = aux;
-    } else {
-      res = adaptador(aux);
-    }
-
+    return adaptador ? adaptador(aux) : aux;
   } catch (er) {
     console.error('Error en fetchGenerico:', er);
-    error += er.message;
-  } finally {
-    return { res, error }
-  }
+    throw er;
+  } 
 }
-
-
-
-

@@ -1,13 +1,26 @@
-let productos = [];
+const leerProductosSesionStorage = () => {
+  const aux = sessionStorage.getItem('productos')
+  const productos = aux ? JSON.parse(aux) : [];
+  return productos;
+}
+
+const editarProductos = (productos) => {
+  let aux = null;
+  if (productos && productos.length > 0) {
+    aux = productos
+  };
+  sessionStorage.setItem('productos', JSON.stringify(aux))
+}
 
 async function mostrarProductos(idProveedor, idRubro) {
   const tbody = document.querySelector('#tabla tbody');
-  titulo.textContent = 'Productos';
+  titulo().textContent = 'Productos';
   const btn = crearBtnAgregar();
   btn.addEventListener('click', () => {
     window.location.hash = `${URLRUTAS.PRODUCTOS_FORM}`;
   });
 
+  btn.title = 'Nuevo producto';
   const titulos = ['Unidad', 'Nombre'];
   if (!idRubro) {
     titulos.push('Rubro');
@@ -19,14 +32,13 @@ async function mostrarProductos(idProveedor, idRubro) {
   crearTituloTabla(titulos);
 
   try {
+    let productos = [];
     if (idProveedor) {
-      await agregarScript({ ...RUTASCRIPT.PROV });
       const proveedor = await proveedorGet(idProveedor);
       productos = proveedor.productos;
-      titulo.textContent += ` de ${proveedor.nombre}`;
+      titulo().textContent += ` de ${proveedor.nombre}`;
     }
     if (idRubro) {
-      await agregarScript({ ...RUTASCRIPT.RUBRO });
       const rubro = await rubrosGet(idRubro);
       productos = rubro.productos;
     }
@@ -34,9 +46,12 @@ async function mostrarProductos(idProveedor, idRubro) {
       productos = await productoGet();
     }
 
+    editarProductos(productos);
+
     if (productos.length != 0) {
       productos.map(p => tbody.appendChild(mostrarProductoIndividual(p, idProveedor, idRubro, true)));
     }
+
 
   } catch (er) {
     console.log(er)
@@ -49,7 +64,7 @@ async function mostrarProductos(idProveedor, idRubro) {
   Filtra por proveedor o rubro si recibe parámetros.
  ------------>>>*/
 
-const mostrarProductoIndividual = (p, proveedor, rubro, botonDesplegable) => {
+const mostrarProductoIndividual = (p, prov, rubro, botonDesplegable) => {
   const fila = document.createElement('tr');
   fila.id = `prod-${p.id}`;
 
@@ -64,11 +79,11 @@ const mostrarProductoIndividual = (p, proveedor, rubro, botonDesplegable) => {
     tdRubro.textContent = p.rubro;
   }
 
-  if (!proveedor) {
+  if (!prov) {
     const proveedor = fila.insertCell();
     proveedor.textContent = p.proveedores.join(', ');
   }
-
+  
   if (botonDesplegable) {
     const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProducto, URLRUTAS.PRODUCTOS_FORM);
     fila.appendChild(subMenuEdit);
@@ -87,7 +102,8 @@ async function funcionEliminarProducto(id) {
     if (respuesta.error) {
       throw new Error('No se pudo eliminar el producto, ' + respuesta.error);
     }
-    productos = productos.filter(p => p.id != id);
+    const productos = leerProductosSesionStorage();
+    editarProductos(productos.filter(p => p.id != id));
 
     const tr = document.querySelector(`#prod-${id}`);
     if (tr) tr.remove();
@@ -98,22 +114,20 @@ async function funcionEliminarProducto(id) {
 
 async function nuevoProducto(id) {
   let producto = null;
+  const productos = leerProductosSesionStorage();
   if (id) {
     producto = productos.find(p => p.id == id);
   }
   try {
-    await agregarScript(RUTASCRIPT.RUBRO);
     const rubros = await rubrosGet();
     const form = crearForm();
-    titulo.textContent = 'Nuevo producto';
+    titulo().textContent = 'Nuevo producto';
     form.formulario.insertBefore(crearInput('Nombre del producto: ', 'nombre', true, null, producto ? producto.nombre : null), form.botonera);
     form.formulario.insertBefore(crearInput('Unidad de compra: ', 'unidad', true, null, producto ? producto.unidad : null), form.botonera);
     form.formulario.insertBefore(crearSelec('Rubro: ', 'rubro', rubros, false, producto && producto.rubro), form.botonera);
   } catch (er) {
     cargarError(`${er.message}`);
-  } finally {
-    quitarScript(RUTASCRIPT.RUBRO);
-  }
+  } 
 }
 
 const productoDto = () => {
@@ -137,38 +151,31 @@ const productoDto = () => {
 async function productoFetch(id) {
   const ruta = id ? RUTAAPI.PRODUCTO + '/' + id : RUTAAPI.PRODUCTO;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
+  const productos = leerProductosSesionStorage();
   try {
-    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
-    await agregarScript(RUTASCRIPT.VERIFICAR);
     const respuesta = await fetchGenerico(
       ruta,
       productoDto(),
       method,
       productoAdapter,
     );
-    if (respuesta.error) {
-      console.log('respuesta ', respuesta.error)
-      throw new Error(respuesta.error)
-    }
-    const index = productos.findIndex(p => p.id === respuesta.res.id);
+    
+    const index = productos.findIndex(p => p.id === respuesta.id);
     if (index != -1) {
-      productos[index] = respuesta.res;
+      productos[index] = respuesta;
     } else {
-      productos.push(respuesta.res);
+      productos.push(respuesta);
     }
+    editarProductos(productos)
     window.location.hash = `${URLRUTAS.PRODUCTOS}`;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id);
-    quitarScript(RUTASCRIPT.VERIFICAR);
-  }
+  } 
 }
 
 async function productoGet(id) {
   const ruta = id ? RUTAAPI.PRODUCTO + '/' + id : RUTAAPI.PRODUCTO;
   try {
-    await agregarScript(RUTASCRIPT.PRODUCTO_ADAPTER);
     const adapter = id ? productoAdapter : productoAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -176,13 +183,10 @@ async function productoGet(id) {
       METODOS_FETCH.GET,
       adapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
-    return respuesta.res;
+    if (!respuesta) throw new Error(respuesta.error);
+
+    return respuesta;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PRODUCTO_ADAPTER.id)
-  }
+  } 
 }

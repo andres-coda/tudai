@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Funciones de validación para formularios
+ * @module verificacion
+ */
+
+/**
+ * Valida los datos de un producto
+ * @param {string} nombre - Nombre del producto (2-50 caracteres)
+ * @param {string} rubro - ID del rubro asociado
+ * @param {string} unidad - Unidad de medida (2-50 caracteres)
+ * @returns {string|null} Mensaje de error o null si es válido
+ */
+
 const verificarProducto = (nombre, rubro, unidad) => {
   if (!nombre) return 'El producto requiere nombre';
   if (nombre.length < 2 || nombre.length > 50) return 'El nombre del producto debe tener entre 2 y 50 caracteres';
@@ -7,14 +20,29 @@ const verificarProducto = (nombre, rubro, unidad) => {
   return null;
 }
 
+
+/**
+ * Valida los datos de un proveedor
+ * @param {string} nombre - Nombre del proveedor (2-50 caracteres)
+ * @param {string} telefono - Número de teléfono (10-15 dígitos)
+ * @returns {string|null} Mensaje de error o null si es válido
+ */
+
 const verificarProveedor = (nombre, telefono) => {
   if (!nombre) return 'El proveedor requiere nombre';
   if (nombre.length < 2 || nombre.length > 50) return 'El nombre del proveedor debe tener entre 2 y 50 caracteres';
   if (!telefono) return 'El proveedor debe tener un número de telefono';
-  if (!Number(telefono)) 'El telefono debe ser númerico';
-  if (telefono.length < 10 || telefono.length > 15) 'El número debe tener entre 10 y 15 caracteres';
+  if (!Number(telefono)) return 'El telefono debe ser númerico';
+  if (telefono.length < 10 || telefono.length > 15) return 'El número debe tener entre 10 y 15 caracteres';
   return null;
 }
+
+
+/**
+ * Valida los datos de un rubro
+ * @param {string} nombre - Nombre del rubro (2-50 caracteres)
+ * @returns {string|null} Mensaje de error o null si es válido
+ */
 
 const verificarRubro = (nombre) => {
   if (!nombre) return 'El rubro requiere nombre';
@@ -22,11 +50,27 @@ const verificarRubro = (nombre) => {
   return null;
 }
 
+
+/**
+ * Valida los datos de una lista/pedido
+ * @param {string} fecha - Fecha del pedido (formato ISO)
+ * @param {string} proveedor - ID del proveedor
+ * @returns {string|null} Mensaje de error o null si es válido
+ */
+
 const verificarLista = (fecha, proveedor) => {
   if (!fecha) return 'La lista requiere fecha';
   if (!proveedor) return 'La lista requiere proveedor';
   return null;
 }
+
+
+/**
+ * Valida las credenciales de login
+ * @param {string} email - Email del usuario (5-256 caracteres)
+ * @param {string} password - Contraseña (6-30 caracteres)
+ * @returns {string|null} Mensaje de error o null si es válido
+ */
 
 const verificarLogin = (email, password) => {
   if (!email) return 'Para loguiarse agregue el mail';

@@ -1,12 +1,33 @@
 
+const leerListaSesionStorage = () => {
+  const aux = sessionStorage.getItem('listas')
+  const listas = aux ? JSON.parse(aux) : [];
+  return listas;
+}
+
+const editarLista = (lista) => {
+  let aux = null;
+  if (lista && lista.length > 0) {
+    aux = lista
+  };
+  sessionStorage.setItem('listas', JSON.stringify(aux))
+}
+
+const leerPedidoSesionStorage = () => {
+  const aux = sessionStorage.getItem('pedidoActual')
+  const pedido = aux ? JSON.parse(aux) : null;
+  return pedido;
+}
+
 async function mostrarListas() {
-  let listas = await JSON.parse(sessionStorage.getItem('listas')) || [];
+  let listas = leerListaSesionStorage();
   const tbody = document.querySelector('#tabla tbody');
-  titulo.textContent = 'Pedidos';
+  titulo().textContent = 'Pedidos';
   const btn = crearBtnAgregar();
   btn.addEventListener('click', () => {
     window.location.hash = `${URLRUTAS.LISTAS_FORM}`;
   });
+  btn.title = 'Nuevo pedido';
 
   const titulos = ['Fecha', 'Proveedor', 'Estado'];
   crearTituloTabla(titulos);
@@ -14,7 +35,7 @@ async function mostrarListas() {
   try {
     if (listas.length == 0) {
       listas = await listaGet();
-      sessionStorage.setItem('listas', JSON.stringify(listas))
+      editarLista(listas);
     }
     listas.forEach(p => {
       const fila = tbody.insertRow();
@@ -46,7 +67,7 @@ async function mostrarListas() {
 
 async function funcionEliminarLista(id) {
   try {
-    let listas = await JSON.parse(sessionStorage.getItem('listas'));
+    let listas = leerListaSesionStorage();
     const respuesta = await fetchGenerico(
       RUTAAPI.LISTA + '/' + id,
       null,
@@ -61,7 +82,7 @@ async function funcionEliminarLista(id) {
     const tr = document.querySelector(`#lista-${id}`);
     if (tr) tr.remove();
 
-    sessionStorage.setItem('listas', JSON.stringify(listas))
+    editarLista(listas);
   } catch (er) {
     cargarError(er);
   }
@@ -69,38 +90,33 @@ async function funcionEliminarLista(id) {
 
 async function nuevaLista(id) {
   try {
-    let listas = await JSON.parse(sessionStorage.getItem('listas'));
+    let listas = leerListaSesionStorage();
     let pedido = null;
     if (id) {
       pedido = listas.find(l => l.id == id);
     }
-    await agregarScript(RUTASCRIPT.PROV)
     const proveedores = await proveedorGet()
     const form = crearForm(true);
-    titulo.textContent = 'Nueva lista';
+    titulo().textContent = 'Nueva lista';
     form.formulario.insertBefore(crearInput('Fecha: ', 'fecha', true, 'date', pedido?.fecha), form.botonera);
     form.formulario.insertBefore(crearSelec('Proveedor: ', 'proveedor', proveedores, true, pedido?.proveedor), form.botonera);
     form.formulario.insertBefore(crearInput('Estado del pedido: ', 'estado', false, null, pedido?.estado), form.botonera);
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PROV.id)
   }
 }
 
 async function nuevoPedidoIndividual(id) {
   try {
-    const pedido = await JSON.parse(sessionStorage.getItem('pedidoActual'));
+    const pedido = leerPedidoSesionStorage();
 
     if (!pedido) {
       throw new Error("No hay pedido cargado. Volvé a Nueva Lista.");
     }
-    await agregarScript(RUTASCRIPT.PROV);
-    await agregarScript(RUTASCRIPT.PRODUCTO);
     const proveedor = await proveedorGet(pedido.proveedor);
 
     const tbody = document.querySelector('#tabla tbody');
-    titulo.textContent = `Completar pedido ${formatearFechaLocal(pedido.fecha)} de ${proveedor.nombre}`;
+    titulo().textContent = `Completar pedido ${formatearFechaLocal(pedido.fecha)} de ${proveedor.nombre}`;
 
     const titulos = ['Unidad', 'Producto', 'Cantidad'];
     crearTituloTabla(titulos);
@@ -125,13 +141,10 @@ async function nuevoPedidoIndividual(id) {
       () => window.history.back(),
       'Guardar',
     );
-    contenedor.appendChild(botonera);
+    contenedor().appendChild(botonera);
 
   } catch (er) {
     cargarError(`${er.message}`);
-  } finally {
-    quitarScript(RUTASCRIPT.LISTA_ADAPTER.id);
-    quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }
 
@@ -184,32 +197,26 @@ async function listaFetch(id = null) {
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
 
   try {
-    await agregarScript(RUTASCRIPT.VERIFICAR);
-    await agregarScript(RUTASCRIPT.LISTA_ADAPTER);
-    
-    let listas = await JSON.parse(sessionStorage.getItem('listas'));
+
+    let listas = leerListaSesionStorage();
     const respuesta = await fetchGenerico(
       ruta,
       listaPedidoDto(),
       method,
       listaAdapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
-    const index = listas.findIndex(p => p.id === respuesta.res.id);
+    
+    const index = listas.findIndex(p => p.id === respuesta.id);
     if (index != -1) {
-      listas[index] = respuesta.res;
+      listas[index] = respuesta;
     } else {
-      listas.push(respuesta.res);
-    }    
-    sessionStorage.setItem('listas', JSON.stringify(listas))
-    window.location.hash = `${URLRUTAS.PEDIDO}/${respuesta.res.id}`;
+      listas.push(respuesta);
+    }
+    editarLista(listas);
+    window.location.hash = `${URLRUTAS.PEDIDO}/${respuesta.id}`;
   } catch (er) {
     cargarError(`${er.message}`);
   } finally {
-    quitarScript(RUTASCRIPT.LISTA_ADAPTER.id);
-    quitarScript(RUTASCRIPT.VERIFICAR.id);
     sessionStorage.removeItem('pedidoActual');
   }
 }
@@ -222,7 +229,6 @@ async function listaFetch(id = null) {
 async function listaGet(id) {
   const ruta = id ? RUTAAPI.LISTA + '/' + id : RUTAAPI.LISTA;
   try {
-    await agregarScript(RUTASCRIPT.LISTA_ADAPTER);
     const adapter = id ? listaAdapter : listaAdapterArray;
     const respuesta = await fetchGenerico(
       ruta,
@@ -230,14 +236,11 @@ async function listaGet(id) {
       METODOS_FETCH.GET,
       adapter,
     );
-    if (respuesta.error) {
-      throw new Error(respuesta.error)
-    }
-    return respuesta.res;
+    if (!respuesta) throw new Error(respuesta.error);
+
+    return respuesta;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.LISTA_ADAPTER.id);
   }
 }
 
@@ -272,8 +275,6 @@ const crearBtnFlechas = (cantidad) => {
   const btnMas = document.createElement('button');
   btnMas.classList.add('btn-icono');
   btnMas.addEventListener('click', (e) => {
-    console.log('cantidad value ', cantidad.value)
-    console.log('cantidad textContext ', cantidad.textContent)
     e.stopPropagation();
     const cantidadAux = Number(cantidad.value);
     if (cantidadAux === 0.5) {
@@ -293,15 +294,13 @@ const crearBtnFlechas = (cantidad) => {
 
 async function pasarPedido(id) {
   try {
-    await agregarScript(RUTASCRIPT.VERIFICAR);
+    console.log('<<<--- id en pasar pedido -->>', id);
     const pedido = listaDto();
     sessionStorage.setItem('pedidoActual', JSON.stringify(pedido));
 
-    window.location.hash = `${URLRUTAS.LISTA_PEDIDO}/${id || ''}`;
+    window.location.hash = `${URLRUTAS.LISTA_PEDIDO}/${id ?? ''}`;
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.VERIFICAR.id);
   }
 }
 
@@ -311,12 +310,10 @@ async function mostrarPedidoIndividual(id) {
     const pedido = await listaGet(id);
 
     const tbody = document.querySelector('#tabla tbody');
-    titulo.textContent = `Pedido ${formatearFechaLocal(pedido.fecha)} para ${pedido.proveedor}`;
+    titulo().textContent = `Pedido ${formatearFechaLocal(pedido.fecha)} para ${pedido.proveedor}`;
 
     const titulos = ['Unidad', 'Producto', 'rubro', 'Cantidad'];
     crearTituloTabla(titulos);
-    await agregarScript(RUTASCRIPT.PRODUCTO)
-    await agregarScript(RUTASCRIPT.ENVIAR)
     pedido.productos.map(p => {
       const fila = mostrarProductoIndividual(p, true, false, false);
       const celda = fila.insertCell();
@@ -329,16 +326,13 @@ async function mostrarPedidoIndividual(id) {
         const msj = armarMensajePedido(pedido);
         enviarPedidoWhatsApp(pedido.telefono, msj);
       },
-      () => nuevaLista(id),
+      () => nuevoPedidoIndividual(id),
       'Enviar',
       'Editar'
     );
 
-    contenedor.appendChild(botonera);
+    contenedor().appendChild(botonera);
   } catch (er) {
     cargarError(er);
-  } finally {
-    quitarScript(RUTASCRIPT.PRODUCTO.id);
-    quitarScript(RUTASCRIPT.ENVIAR.id);
   }
 }

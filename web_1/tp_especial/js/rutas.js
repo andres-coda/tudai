@@ -1,12 +1,19 @@
-const contenedor = document.querySelector('#contenedor');
-const botoneraAgregar = document.querySelector('#botonera-agregar');
-const carpetaBase = '/paginas';
+const contenedor = () => {
+  return document.querySelector('#contenedor');
+}
+const botoneraAgregar = () => {
+  return document.querySelector('#botonera-agregar');
+}
+
+const carpetaBase = () => {
+  return '/paginas';
+}
 
 /*<<<------------ 
   Constante para guardar las rutas del navegador 
 ------------>>>*/
 const URLRUTAS = {
-  INICIO: '/',
+  INICIO: '/index',
   PRODUCTOS: '/productos',
   PRODUCTOS_PROV: '/productos/prov',
   PRODUCTOS_RUBRO: '/productos/rubro',
@@ -21,28 +28,54 @@ const URLRUTAS = {
   PEDIDO: '/listas/pedido-muestra',
   LOGIN: '/login',
   REGISTRO: '/registro',
-  ERROR: '/error'
+  ERROR: '/error',
+  PERFIL: '/perfil'
 };
 
 /*<<<------------
   Constante para guardar las rutas interna de carpetas y archivos 
 ------------>>> */
 const rutas = {
-  [URLRUTAS.INICIO]: carpetaBase + '/inicio.html',
-  [URLRUTAS.PRODUCTOS]: carpetaBase + '/tabla.html',
-  [URLRUTAS.PRODUCTOS_FORM]: carpetaBase + '/formulario.html',
-  [URLRUTAS.RUBROS]: carpetaBase + '/tabla.html',
-  [URLRUTAS.RUBROS_FORM]: carpetaBase + '/formulario.html',
-  [URLRUTAS.PROVEEDORES]: carpetaBase + '/tabla.html',
-  [URLRUTAS.PROVEEDORES_FORM]: carpetaBase + '/formulario.html',
-  [URLRUTAS.LISTAS]: carpetaBase + '/tabla.html',
-  [URLRUTAS.LISTAS_FORM]: carpetaBase + '/formulario.html',
-  [URLRUTAS.LISTA_PEDIDO]: carpetaBase + '/tabla.html',
-  [URLRUTAS.PEDIDO]: carpetaBase + '/tabla.html',
-  [URLRUTAS.LOGIN]: carpetaBase + '/formulario.html',
-  [URLRUTAS.REGISTRO]: carpetaBase + '/formulario.html',
-  [URLRUTAS.ERROR]: carpetaBase + '/error.html',
-  [URLRUTAS.ERROR]: carpetaBase + '/cargando.html',
+  [URLRUTAS.INICIO]: `${carpetaBase()}/inicio.html`,
+  [URLRUTAS.PRODUCTOS]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.PRODUCTOS_FORM]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.RUBROS]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.RUBROS_FORM]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.PROVEEDORES]: `${carpetaBase()}/cardProveedor.html`,
+  [URLRUTAS.PROVEEDORES_FORM]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.LISTAS]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.LISTAS_FORM]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.LISTA_PEDIDO]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.PEDIDO]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.LOGIN]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.REGISTRO]: `${carpetaBase()}/formulario.html`,
+  [URLRUTAS.PERFIL]: `${carpetaBase()}/perfil.html`,
+  [URLRUTAS.ERROR]: `${carpetaBase()}/cargando.html`,
+}
+
+async function verificarUsuario() {
+  const login = document.querySelector('#login');
+  
+  try {
+    const token = getLocalStorageSeguro('token');
+    let user = getLocalStorageSeguro('user');
+    
+    if (!user && token && token !== 'null' && token.length > 10) {
+      user = await perfilFetch();
+    }
+
+    if (user) {
+      login.textContent = user.nombre;
+      login.href = "#/perfil";
+      return user;
+    }
+    login.textContent = 'Iniciar sesión';
+    login.href = "#/login";
+    return null;
+  } catch (er) {
+    cargarError(er);
+    return null;
+  }
 }
 
 /*<<<------------
@@ -54,18 +87,18 @@ const rutas = {
 
 async function cargarRuta() {
   const path = window.location.hash.slice(1) || '/';
-  const rutaVerif = verificarRutasDinamicas(path);
-  const ruta = rutas[rutaVerif.newPath];
-
-  if (!ruta) {
-    contenedor.innerHTML = pgError;
-    return;
-  };
   try {
+    const rutaVerif = await verificarRutasDinamicas(path);
+    if (!rutaVerif) throw new Error('Error verificando ruta');
+    
+    const ruta = rutas[rutaVerif.newPath];
+    if (!ruta) {
+      contenedor().innerHTML = '';
+      throw new Error('No existe ruta ' + ruta);
+    };
     const res = await fetch(ruta);
     const html = await res.text();
-
-    contenedor.innerHTML = html;
+    contenedor().innerHTML = html;
     generarPantalla(rutaVerif);
   } catch (er) {
     cargarError(er);
@@ -79,58 +112,81 @@ async function cargarRuta() {
  ------------>>>*/
 
 
-const verificarRutasDinamicas = (path) => {
+async function verificarRutasDinamicas(path) {
   let idRubro = null;
   let idProveedor = null;
   let idSelect = null;
   let newPath = path;
 
-  if (path.startsWith(URLRUTAS.PRODUCTOS_PROV)) {
-    const partes = path.split('/');
-    idProveedor = partes[3];
-    newPath = URLRUTAS.PRODUCTOS;
-  }
+  try {
+    const user = await verificarUsuario();
+    if (path.startsWith(URLRUTAS.REGISTRO)) {
+      return { newPath, idRubro, idProveedor, idSelect }
+    }
+    if (path.startsWith(URLRUTAS.INICIO)) {
+      return { newPath, idRubro, idProveedor, idSelect }
+    }
+    if (!user) {
+      newPath = URLRUTAS.LOGIN;
+      return { newPath, idRubro, idProveedor, idSelect }
+    }
 
-  if (path.startsWith(URLRUTAS.PRODUCTOS_RUBRO)) {
-    const partes = path.split('/');
-    idRubro = partes[3];
-    newPath = URLRUTAS.PRODUCTOS;
-  }
+    if (path.startsWith(URLRUTAS.PRODUCTOS_PROV)) {
+      const partes = path.split('/');
+      idProveedor = partes[3];
+      newPath = URLRUTAS.PRODUCTOS;
+    }
 
-  if (path.startsWith(URLRUTAS.PRODUCTOS_FORM)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.PRODUCTOS_FORM;
-  }
+    if (path.startsWith(URLRUTAS.PRODUCTOS_RUBRO)) {
+      const partes = path.split('/');
+      idRubro = partes[3];
+      newPath = URLRUTAS.PRODUCTOS;
+    }
 
-  if (path.startsWith(URLRUTAS.RUBROS_FORM)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.RUBROS_FORM;
-  }
+    if (path.startsWith(URLRUTAS.PRODUCTOS_FORM)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.PRODUCTOS_FORM;
+    }
 
-  if (path.startsWith(URLRUTAS.PROVEEDORES_FORM)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.PROVEEDORES_FORM;
-  }
-  if (path.startsWith(URLRUTAS.LISTAS_FORM)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.LISTAS_FORM;
-  }
-  if (path.startsWith(URLRUTAS.LISTA_PEDIDO)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.LISTA_PEDIDO;
-  }
-  if (path.startsWith(URLRUTAS.PEDIDO)) {
-    const partes = path.split('/');
-    idSelect = partes[3];
-    newPath = URLRUTAS.PEDIDO;
-  }
+    if (path.startsWith(URLRUTAS.RUBROS_FORM)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.RUBROS_FORM;
+    }
 
-  return { newPath, idRubro, idProveedor, idSelect }
+    if (path.startsWith(URLRUTAS.PROVEEDORES_FORM)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.PROVEEDORES_FORM;
+    }
+    if (path.startsWith(URLRUTAS.LISTAS_FORM)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.LISTAS_FORM;
+    }
+    if (path.startsWith(URLRUTAS.LISTA_PEDIDO)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.LISTA_PEDIDO;
+    }
+    if (path.startsWith(URLRUTAS.PEDIDO)) {
+      const partes = path.split('/');
+      idSelect = partes[3];
+      newPath = URLRUTAS.PEDIDO;
+    }
+
+    console.log('<<<--- ruta --->>>', path);
+    return { newPath, idRubro, idProveedor, idSelect }
+  } catch (er) {
+    cargarError(er);
+    return {
+      newPath: URLRUTAS.LOGIN,
+      idRubro: null,
+      idProveedor: null,
+      idSelect: null
+    };
+  }
 }
 
 /* <<<------------
@@ -144,12 +200,10 @@ async function generarPantalla(rutaVerif) {
 
     switch (rutaVerif.newPath) {
       case URLRUTAS.INICIO: {
-        await agregarScript(RUTASCRIPT.INICIO);
         cargarInicio()
         break;
       };
       case URLRUTAS.PRODUCTOS: {
-        await agregarScript(RUTASCRIPT.PRODUCTO);
         await mostrarProductos(rutaVerif.idProveedor, rutaVerif.idRubro);
         break;
       }
@@ -158,33 +212,28 @@ async function generarPantalla(rutaVerif) {
         break
       }
       case URLRUTAS.PROVEEDORES: {
-        await agregarScript({ ...RUTASCRIPT.PROV });
-        mostrarProveedores()
+        mostrarProveedoresCard(contenedor(), titulo())
         break;
       };
       case URLRUTAS.PROVEEDORES_FORM: nuevoProeveedor(rutaVerif.idSelect);
         break
       case URLRUTAS.RUBROS: {
-        await agregarScript({ ...RUTASCRIPT.RUBRO });
         await mostrarRubros();
         break;
       }
       case URLRUTAS.RUBROS_FORM: nuevoRubro(rutaVerif.idSelect);
         break;
       case URLRUTAS.LISTAS: {
-        await agregarScript({ ...RUTASCRIPT.LISTA });
         await mostrarListas();
         break;
       };
       case URLRUTAS.LISTAS_FORM: nuevaLista(rutaVerif.idSelect);
         break;
       case URLRUTAS.LISTA_PEDIDO: {
-        await agregarScript({ ...RUTASCRIPT.LISTA });
         await nuevoPedidoIndividual(rutaVerif.idSelect)
         break;
       }
       case URLRUTAS.PEDIDO: {
-        await agregarScript({ ...RUTASCRIPT.LISTA });
         await mostrarPedidoIndividual(rutaVerif.idSelect)
         break;
       }
@@ -192,15 +241,11 @@ async function generarPantalla(rutaVerif) {
         break;
       case URLRUTAS.REGISTRO: registro();
         break;
+      case URLRUTAS.PERFIL: perfil();
+        break;
     }
   } catch (er) {
     cargarError(er.message);
-  } finally {
-    quitarScript(RUTASCRIPT.INICIO.id);
-    quitarScript(RUTASCRIPT.LISTA.id);
-    quitarScript(RUTASCRIPT.RUBRO.id);
-    quitarScript(RUTASCRIPT.PROV.id);
-    quitarScript(RUTASCRIPT.PRODUCTO.id);
   }
 }
 
