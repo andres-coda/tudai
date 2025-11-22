@@ -104,7 +104,7 @@ async function perfilFetch() {
 
 		if (!respuesta) throw new Error('Error al intentar obtener el perfil ');
 
-		setLocalStorageSeguro('user', JSON.stringify(respuesta));
+		setLocalStorageSeguro('user', respuesta);
 		return respuesta;
 	} catch (er) {
 		logout()

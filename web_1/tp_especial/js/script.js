@@ -39,6 +39,11 @@ const crearBtnAtras = () => {
   });
 }
 
+const eliminarBotonAtras = () => {
+  const botoneraAtras = document.querySelector('#botonera-atras')
+  botoneraAtras.innerHTML = '';
+}
+
 const crearBtnDesplegable = (id, eliminarDato, url) => {
   const divBotoneraFlecha = document.createElement('div');
   divBotoneraFlecha.classList.add('botonera-flecha-contenedor');
@@ -142,9 +147,19 @@ const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, btnAtrasT
 }
 
 const formatearFechaLocal = (fechaISO) => {
+  if(!fechaISO) return '';
   const [anio, mes, dia] = fechaISO.split('T')[0].split('-');
   return `${dia}/${mes}/${anio}`;
 }
+
+function formatearFechaForm(iso) {
+  const d = new Date(iso);
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 
 /**
  * Lee de localStorage de forma segura

@@ -49,7 +49,7 @@ async function mostrarProductos(idProveedor, idRubro) {
     editarProductos(productos);
 
     if (productos.length != 0) {
-      productos.map(p => tbody.appendChild(mostrarProductoIndividual(p, idProveedor, idRubro, true)));
+      productos.map(p => tbody.appendChild(mostrarProductoIndividual(p, idProveedor, idRubro)));
     }
 
 
@@ -64,7 +64,7 @@ async function mostrarProductos(idProveedor, idRubro) {
   Filtra por proveedor o rubro si recibe parámetros.
  ------------>>>*/
 
-const mostrarProductoIndividual = (p, prov, rubro, botonDesplegable) => {
+const mostrarProductoIndividual = (p, prov, rubro) => {
   const fila = document.createElement('tr');
   fila.id = `prod-${p.id}`;
 
@@ -84,7 +84,7 @@ const mostrarProductoIndividual = (p, prov, rubro, botonDesplegable) => {
     proveedor.textContent = p.proveedores.join(', ');
   }
   
-  if (botonDesplegable) {
+  if (!rubro && !prov) {
     const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProducto, URLRUTAS.PRODUCTOS_FORM);
     fila.appendChild(subMenuEdit);
   }
@@ -119,6 +119,7 @@ async function nuevoProducto(id) {
     producto = productos.find(p => p.id == id);
   }
   try {
+    console.log('<<<--- Rubro producto --->>>', producto.rubro)
     const rubros = await rubrosGet();
     const form = crearForm();
     titulo().textContent = 'Nuevo producto';

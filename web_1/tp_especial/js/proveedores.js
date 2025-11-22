@@ -32,7 +32,7 @@ async function crearCard(proveedor) {
     editar.removeAttribute('id');
 
     btnPedid.addEventListener('click', () => {
-      window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${proveedor.id}`;
+      window.location.hash = `${URLRUTAS.LISTAS_PROV}/${proveedor.id}`;
     });
     btnProd.addEventListener('click', () => {
       window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${proveedor.id}`;

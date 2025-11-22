@@ -24,6 +24,7 @@ const URLRUTAS = {
   PROVEEDORES_FORM: '/proveedores/formulario',
   LISTAS: '/listas',
   LISTAS_FORM: '/listas/formulario',
+  LISTAS_PROV: '/listas/proveedor',
   LISTA_PEDIDO: '/listas/pedidos',
   PEDIDO: '/listas/pedido-muestra',
   LOGIN: '/login',
@@ -46,6 +47,7 @@ const rutas = {
   [URLRUTAS.LISTAS]: `${carpetaBase()}/tabla.html`,
   [URLRUTAS.LISTAS_FORM]: `${carpetaBase()}/formulario.html`,
   [URLRUTAS.LISTA_PEDIDO]: `${carpetaBase()}/tabla.html`,
+  [URLRUTAS.LISTAS_PROV]: `${carpetaBase()}/tabla.html`,
   [URLRUTAS.PEDIDO]: `${carpetaBase()}/tabla.html`,
   [URLRUTAS.LOGIN]: `${carpetaBase()}/formulario.html`,
   [URLRUTAS.REGISTRO]: `${carpetaBase()}/formulario.html`,
@@ -98,6 +100,7 @@ async function cargarRuta() {
     };
     const res = await fetch(ruta);
     const html = await res.text();
+    eliminarBotonAtras();
     contenedor().innerHTML = html;
     generarPantalla(rutaVerif);
   } catch (er) {
@@ -170,13 +173,17 @@ async function verificarRutasDinamicas(path) {
       idSelect = partes[3];
       newPath = URLRUTAS.LISTA_PEDIDO;
     }
+    if (path.startsWith(URLRUTAS.LISTAS_PROV)) {
+      const partes = path.split('/');
+      idProveedor = partes[3];
+      newPath = URLRUTAS.LISTAS_PROV;
+    }
     if (path.startsWith(URLRUTAS.PEDIDO)) {
       const partes = path.split('/');
       idSelect = partes[3];
       newPath = URLRUTAS.PEDIDO;
     }
 
-    console.log('<<<--- ruta --->>>', path);
     return { newPath, idRubro, idProveedor, idSelect }
   } catch (er) {
     cargarError(er);
@@ -231,6 +238,10 @@ async function generarPantalla(rutaVerif) {
         break;
       case URLRUTAS.LISTA_PEDIDO: {
         await nuevoPedidoIndividual(rutaVerif.idSelect)
+        break;
+      }
+      case URLRUTAS.LISTAS_PROV: {
+        await mostrarListas(rutaVerif.idProveedor)
         break;
       }
       case URLRUTAS.PEDIDO: {

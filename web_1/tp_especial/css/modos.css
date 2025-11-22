@@ -1,7 +1,7 @@
 :root {
   --font-base: "Nunito", sans-serif;
   --fondo-app: #1e3006;
-  --hover: #ffe787;
+  --hover: #5c773e;
   --texto: #f3f2ea;
   --texto-secundario: black;
   --fondo-boton: #dbbb3c;
@@ -83,12 +83,14 @@ body .btn-icono {
   background-color: transparent;
   color: var(--hover);
   border: none;
-  box-shadow: none;
+}
+
+.btn-atras{
+  box-shadow: 1px 1px 1px var(--texto-secundario);
 }
 
 body .ul-checkbox {
   color: var(--texto-secundario);
-  border: 1px solid var(--texto-secundario);
 }
 
 @media(width <=700px) {

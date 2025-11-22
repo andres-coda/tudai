@@ -22,12 +22,12 @@ const datosInput = (input, label, textLabel, nombre, requerido, dato) => {
   input.id = nombre;
   input.name = nombre;
   if (input.type == 'date' && dato) {
-    const fecha = new Date(dato);
-    input.value = fecha.toISOString().split('T')[0];
-  }
-  if ((input.type != 'date' && dato) || input.type != 'checkbox') {
+    const fecha = formatearFechaForm(dato);
+    input.value = fecha;
+  } else  if(input.type != 'checkbox'){
     input.value = dato || '';
   }
+
   input.required = requerido;
   label.htmlFor = nombre;
   label.textContent = textLabel;
@@ -55,7 +55,7 @@ const crearSelec = (textLabel, nombre, arraySelec, requerido, dato) => {
     opcion.id = elemento.id;
     opcion.textContent = elemento.nombre;
     opcion.value = elemento.id;
-    if (dato && elemento.id === dato) {
+    if (dato && elemento.nombre === dato) {
       opcion.selected = true;
     }
     select.appendChild(opcion);

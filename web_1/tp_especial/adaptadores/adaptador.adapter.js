@@ -25,6 +25,7 @@ const listaAdapter = (res) => {
     fecha: res.fecha,
     estado: res.estado,
     proveedor: res.proveedor?.nombre || '',
+    proveedorId: res.proveedor?.id || '',
     telefono: res.proveedor?.telefono || '',
     productos: listaProdAdapterArray(res.pedidos_productos)
   }
@@ -40,6 +41,7 @@ const listaProductoAdapter = (res) => {
   if (!res) return listaProductoDefault();
   const listaProd = {
     id: res.id,
+    prodId: res.producto?.id || '',
     nombre: res.producto?.nombre || '',
     rubro: res.producto?.rubro?.nombre || '',
     cantidad: res.cantidad,

@@ -19,7 +19,7 @@ const leerPedidoSesionStorage = () => {
   return pedido;
 }
 
-async function mostrarListas() {
+async function mostrarListas(idProveedor) {
   let listas = leerListaSesionStorage();
   const tbody = document.querySelector('#tabla tbody');
   titulo().textContent = 'Pedidos';
@@ -37,7 +37,9 @@ async function mostrarListas() {
       listas = await listaGet();
       editarLista(listas);
     }
-    listas.forEach(p => {
+    listas
+      .filter(l=> idProveedor ? l.proveedorId === idProveedor : true)
+      .forEach(p => {
       const fila = tbody.insertRow();
       fila.id = `lista-${p.id}`;
 
@@ -56,7 +58,7 @@ async function mostrarListas() {
         window.location.hash = `${URLRUTAS.PEDIDO}/${p.id}`;
       });
 
-      const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarLista, URLRUTAS.LISTAS_FORM);
+      const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarLista, `${URLRUTAS.LISTAS_FORM}/${p.id}`);
       fila.appendChild(subMenuEdit);
     })
   } catch (er) {
@@ -90,11 +92,11 @@ async function funcionEliminarLista(id) {
 
 async function nuevaLista(id) {
   try {
-    let listas = leerListaSesionStorage();
     let pedido = null;
     if (id) {
-      pedido = listas.find(l => l.id == id);
+      pedido =  await listaGet(id);
     }
+
     const proveedores = await proveedorGet()
     const form = crearForm(true);
     titulo().textContent = 'Nueva lista';
@@ -109,7 +111,10 @@ async function nuevaLista(id) {
 async function nuevoPedidoIndividual(id) {
   try {
     const pedido = leerPedidoSesionStorage();
-
+    let lista = null;
+    if(id){
+      lista = await listaGet(id);
+    }
     if (!pedido) {
       throw new Error("No hay pedido cargado. Volvé a Nueva Lista.");
     }
@@ -123,12 +128,13 @@ async function nuevoPedidoIndividual(id) {
 
 
     proveedor.productos.map(p => {
-      const fila = mostrarProductoIndividual(p, proveedor.id, true, false);
+      const fila = mostrarProductoIndividual(p, proveedor.id, true);
       const celda = fila.insertCell();
       celda.classList.add('celda-cant-botonera')
       const cantidad = document.createElement('p');
-      cantidad.value = 0;
-      cantidad.textContent = '0';
+      const cantidadActual = lista?.productos.find(prod=> prod.prodId === p.id) || null;
+      cantidad.value = cantidadActual ? Number(cantidadActual.cantidad) : 0;
+      cantidad.textContent = mostrarCantidad(cantidad.value);
       cantidad.classList.add('celda-cantidad');
       cantidad.id = p.id;
       celda.appendChild(cantidad);
@@ -260,15 +266,15 @@ const crearBtnFlechas = (cantidad) => {
     e.stopPropagation();
     const cantidadAux = Number(cantidad.value);
     if (cantidadAux < 1) {
-      cantidad.value = '0'
+      cantidad.value = 0
     }
     if (cantidadAux === 1) {
-      cantidad.value = '0.5'
+      cantidad.value = 0.5
     }
     if (cantidadAux > 1) {
       cantidad.value = (cantidadAux - 1).toString();
     }
-    cantidad.textContent = cantidad.value;
+    cantidad.textContent = mostrarCantidad(cantidad.value);
   });
   btnMenos.innerHTML = '-';
 
@@ -278,11 +284,11 @@ const crearBtnFlechas = (cantidad) => {
     e.stopPropagation();
     const cantidadAux = Number(cantidad.value);
     if (cantidadAux === 0.5) {
-      cantidad.value = '1';
+      cantidad.value = 1;
     } else {
       cantidad.value = (cantidadAux + 1).toString();
     }
-    cantidad.textContent = cantidad.value;
+    cantidad.textContent = mostrarCantidad(cantidad.value);
   });
   btnMas.innerHTML = '+';
 
@@ -292,13 +298,15 @@ const crearBtnFlechas = (cantidad) => {
   return divBotoneraFlecha;
 }
 
-async function pasarPedido(id) {
+async function pasarPedido(pedid) {
   try {
-    console.log('<<<--- id en pasar pedido -->>', id);
-    const pedido = listaDto();
+    const pedido = pedid
+      ? { ...pedid, proveedor: pedid.proveedorId}
+      : listaDto();
+
     sessionStorage.setItem('pedidoActual', JSON.stringify(pedido));
 
-    window.location.hash = `${URLRUTAS.LISTA_PEDIDO}/${id ?? ''}`;
+    window.location.hash = `${URLRUTAS.LISTA_PEDIDO}/${pedid?.id ?? ''}`;
   } catch (er) {
     cargarError(er);
   }
@@ -315,9 +323,9 @@ async function mostrarPedidoIndividual(id) {
     const titulos = ['Unidad', 'Producto', 'rubro', 'Cantidad'];
     crearTituloTabla(titulos);
     pedido.productos.map(p => {
-      const fila = mostrarProductoIndividual(p, true, false, false);
+      const fila = mostrarProductoIndividual(p, true, false);
       const celda = fila.insertCell();
-      celda.textContent = p.cantidad;
+      celda.textContent = mostrarCantidad(p.cantidad);
       tbody.appendChild(fila);
     });
 
@@ -326,7 +334,7 @@ async function mostrarPedidoIndividual(id) {
         const msj = armarMensajePedido(pedido);
         enviarPedidoWhatsApp(pedido.telefono, msj);
       },
-      () => nuevoPedidoIndividual(id),
+      ()=>pasarPedido(pedido),
       'Enviar',
       'Editar'
     );
@@ -335,4 +343,12 @@ async function mostrarPedidoIndividual(id) {
   } catch (er) {
     cargarError(er);
   }
+}
+
+function mostrarCantidad(val) {
+  const valor = Number(val)
+  if (valor % 1 === 0) {
+    return valor.toString(); // entero
+  }
+  return valor.toFixed(1); // con 1 decimal
 }
