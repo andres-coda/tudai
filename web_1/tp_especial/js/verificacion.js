@@ -79,3 +79,16 @@ const verificarLogin = (email, password) => {
   if (password.length < 6 || password.length > 30) return 'La contraseña debe tener entre 6 y 30 caracteres';
   return null;
 }
+
+const verificarRegistro = (email, password, nombre, telefono) => {
+  const login = verificarLogin(email, password);
+  if(login) return login;
+  if (!nombre) return 'Para registrarse agregue un nombre';
+  if (nombre.length < 3 || email.length > 25) return 'El nombre debe tener entre 3 y 25 caracteres';
+  if (!telefono) return 'Debe tener un número de telefono';
+  if (!Number(telefono)) return 'El telefono debe ser númerico';
+  if (telefono.length < 10 || telefono.length > 15) return 'El número debe tener entre 10 y 15 caracteres';
+  if (!password) return 'Requiere una contraseña';
+  if (password.length < 6 || password.length > 30) return 'La contraseña debe tener entre 6 y 30 caracteres';
+  return null;
+}

@@ -14,6 +14,7 @@ const carpetaBase = () => {
 ------------>>>*/
 const URLRUTAS = {
   INICIO: '/index',
+  CONFIGURACION: '/configuracion',
   PRODUCTOS: '/productos',
   PRODUCTOS_PROV: '/productos/prov',
   PRODUCTOS_RUBRO: '/productos/rubro',
@@ -38,6 +39,7 @@ const URLRUTAS = {
 ------------>>> */
 const rutas = {
   [URLRUTAS.INICIO]: `${carpetaBase()}/inicio.html`,
+  [URLRUTAS.CONFIGURACION]: `${carpetaBase()}/configuracion.html`,
   [URLRUTAS.PRODUCTOS]: `${carpetaBase()}/tabla.html`,
   [URLRUTAS.PRODUCTOS_FORM]: `${carpetaBase()}/formulario.html`,
   [URLRUTAS.RUBROS]: `${carpetaBase()}/tabla.html`,
@@ -253,6 +255,8 @@ async function generarPantalla(rutaVerif) {
       case URLRUTAS.REGISTRO: registro();
         break;
       case URLRUTAS.PERFIL: perfil();
+        break;
+      case URLRUTAS.CONFIGURACION: await configuracion();
         break;
     }
   } catch (er) {

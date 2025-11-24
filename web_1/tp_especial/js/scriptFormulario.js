@@ -104,6 +104,8 @@ async function guardarRegistro() {
     switch (rutaVerif.newPath) {
       case URLRUTAS.LOGIN: loginFetch();
         break;
+      case URLRUTAS.REGISTRO: registroFetch(rutaVerif.idSelect);
+        break;
       case URLRUTAS.RUBROS_FORM: await rubroFetch(rutaVerif.idSelect);
         break;
       case URLRUTAS.PROVEEDORES_FORM: await proveedorFetch(rutaVerif.idSelect);
@@ -113,6 +115,8 @@ async function guardarRegistro() {
       case URLRUTAS.LISTAS_FORM: pasarPedido(rutaVerif.idSelect);
         break;
       case URLRUTAS.LISTA_PEDIDO: listaFetch(rutaVerif.idSelect);
+        break;
+      case URLRUTAS.CONFIGURACION: configDto();
         break;
       default: console.log('no hay tipo')
         break;

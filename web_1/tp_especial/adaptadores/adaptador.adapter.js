@@ -110,9 +110,26 @@ const proveedorDefault = () => {
   }
 }
 
+
+const prodProvAdapter = (res) => {
+  if (!res) return productoDefault();
+  const producto = {
+    id: res.id,
+    nombre: res.nombre,
+    unidad: res.unidad,
+  }
+  return producto;
+}
+
+const productoAdapterProveedorArray = (res) => {
+  if (!res || res.length === 0) return []
+  return res.map(p => prodProvAdapter(p));
+}
+
 const proveedorAdapter = (res) => {
   if (!res) return proveedorDefault();
-  const productos = productoAdapterArray(res.productos);
+  console.log('<<new proveedor -->>', res)
+  const productos = productoAdapterProveedorArray(res?.productos);
   const proveedor = {
     id: res.id,
     nombre: res.nombre,

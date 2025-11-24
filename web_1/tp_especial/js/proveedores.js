@@ -1,5 +1,3 @@
-let proveedores = [];
-
 async function crearCard(proveedor) {
   try {
     const resp = await fetch(rutas[URLRUTAS.PROVEEDORES]);
@@ -53,13 +51,14 @@ async function mostrarProveedoresCard() {
   btn.addEventListener('click', () => {
     window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}`;
   });
-  
+
   btn.title = 'Nuevo proveedor';
+  let proveedores = getSesionStorageSeguro('proveedores');
   try {
-    if (proveedores.length == 0) {
+    if (!proveedores || proveedores.length == 0) {
       proveedores = await proveedorGet();
     }
-    contenedor().innerHTML='';
+    contenedor().innerHTML = '';
     for (const prov of proveedores) {
       const card = await crearCard(prov);
       contenedor().appendChild(card);
@@ -69,51 +68,8 @@ async function mostrarProveedoresCard() {
   }
 }
 
-async function mostrarProveedores() {
-  const tbody = document.querySelector('#tabla tbody');
-
-  titulo().textContent = 'Proveedores';
-  const btn = crearBtnAgregar();
-  btn.addEventListener('click', () => {
-    window.location.hash = `${URLRUTAS.PROVEEDORES_FORM}`;
-  });
-
-  btn.title = 'Nuevo proveedor';
-  const titulos = ['Proveedor', 'Email', 'Telefono'];
-  crearTituloTabla(titulos);
-  try {
-    if (proveedores.length == 0) {
-      proveedores = await proveedorGet();
-    }
-    proveedores.forEach(p => {
-      const fila = tbody.insertRow();
-      fila.id = `prov-${p.id}`;
-
-      const nombre = fila.insertCell();
-      nombre.textContent = p.nombre;
-
-      const email = fila.insertCell();
-      email.textContent = p.email;
-
-      const telefono = fila.insertCell();
-      telefono.textContent = p.telefono;
-
-      fila.classList.add('clickeable');
-
-      fila.addEventListener('click', () => {
-        window.location.hash = `${URLRUTAS.PRODUCTOS_PROV}/${p.id}`;
-      });
-
-      const subMenuEdit = crearBtnDesplegable(p.id, funcionEliminarProveedor, URLRUTAS.PROVEEDORES_FORM);
-      fila.appendChild(subMenuEdit);
-    });
-
-  } catch (er) {
-    cargarError(er);
-  }
-}
-
 async function funcionEliminarProveedor(id) {
+  let proveedores = getSesionStorageSeguro('proveedores');
   try {
     const respuesta = await fetchGenerico(
       RUTAAPI.PROV + '/' + id,
@@ -128,6 +84,9 @@ async function funcionEliminarProveedor(id) {
 
     const tr = document.querySelector(`#prov-${id}`);
     if (tr) tr.remove();
+
+
+    setSesionStorageSeguro('proveedores', proveedores);
   } catch (er) {
     cargarError(er);
   }
@@ -146,7 +105,7 @@ async function nuevoProeveedor(id) {
     form.formulario.insertBefore(crearCheckBox('Productos: ', 'productos', productos, datos), form.botonera);
   } catch (er) {
     cargarError(er);
-  } 
+  }
 }
 
 const provDto = () => {
@@ -176,6 +135,7 @@ async function proveedorFetch(id = null) {
   const ruta = id ? RUTAAPI.PROV + '/' + id : RUTAAPI.PROV;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
 
+  let proveedores = getSesionStorageSeguro('proveedores');
   try {
     const respuesta = await fetchGenerico(
       ruta,
@@ -191,10 +151,12 @@ async function proveedorFetch(id = null) {
       proveedores.push(respuesta);
     }
 
+    setSesionStorageSeguro('proveedores', proveedores);
+
     window.location.hash = `${URLRUTAS.PROVEEDORES}`;
   } catch (er) {
     cargarError(`${er.message}`);
-  } 
+  }
 }
 
 async function proveedorGet(id) {
@@ -212,5 +174,5 @@ async function proveedorGet(id) {
     return respuesta;
   } catch (er) {
     cargarError(er);
-  } 
+  }
 } 

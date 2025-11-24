@@ -1,17 +1,3 @@
-const leerRubroSesionStorage = () => {
-  const aux  = sessionStorage.getItem('rubros')
-  const rubros = aux ? JSON.parse(aux) : [] ;
-  return rubros;
-}
-
-const editarRubros = (rubros) => {
-  let aux = null;
-  if(rubros && rubros.length > 0){
-    aux = rubros
-  };
-  sessionStorage.setItem('rubros', JSON.stringify(aux))
-}
-
 async function mostrarRubros() {
   const ul = document.createElement('ul');
   ul.id = 'lista';
@@ -22,13 +8,11 @@ async function mostrarRubros() {
     window.location.hash = `${URLRUTAS.RUBROS_FORM}`;
   });
   btn.title = 'Nuevo rubro';
-  let rubros = leerRubroSesionStorage();
-  console.log('<<<--- rubros --->>>', rubros)
+  let rubros = getSesionStorageSeguro('rubros');
   try {
-    if (rubros.length == 0) {
+    if (!rubros || rubros.length == 0) {
       rubros = await rubrosGet();
-  console.log('<<<--- rubros --->>>', rubros)
-      editarRubros(rubros);
+      setSesionStorageSeguro('rubros', rubros);
     }
     rubros.forEach(p => {
       const elemento = document.createElement('li');
@@ -60,7 +44,7 @@ async function mostrarRubros() {
 
 async function funcionEliminarRubro(id) {
   try {
-    let rubros = leerRubroSesionStorage();
+    let rubros = getSesionStorageSeguro('rubros');
     const respuesta = await fetchGenerico(
       RUTAAPI.RUBRO + '/' + id,
       null,
@@ -71,7 +55,7 @@ async function funcionEliminarRubro(id) {
       throw new Error('No se pudo eliminar el rubro, ' + respuesta.error);
     }
     rubros = rubros.filter(r => r.id != id);
-    editarRubros(rubros);
+    setSesionStorageSeguro('rubros', rubros);
     const li = document.querySelector(`#rubro-${id}`);
     if (li) li.remove();
   } catch (er) {
@@ -80,7 +64,7 @@ async function funcionEliminarRubro(id) {
 };
 
 const nuevoRubro = (id) => {
-  const rubros = leerRubroSesionStorage();
+  const rubros = getSesionStorageSeguro('rubros');
   let rubro = null;
   if (id) {
     rubro = rubros.find(r => r.id == id);
@@ -106,8 +90,8 @@ const rubroDto = () => {
 async function rubroFetch(id = null) {
   const ruta = id ? RUTAAPI.RUBRO + '/' + id : RUTAAPI.RUBRO;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
-  console.log('fetch');
-  const rubros = leerRubroSesionStorage();
+
+  const rubros = getSesionStorageSeguro('rubros');
   try {
     const res = await fetchGenerico(
       ruta,
@@ -122,7 +106,7 @@ async function rubroFetch(id = null) {
     } else {
       rubros.push(res);
     }
-    editarRubros(rubros);
+    setSesionStorageSeguro('rubros', rubros);
     window.location.hash = `${URLRUTAS.RUBROS}`;
 
   } catch (er) {

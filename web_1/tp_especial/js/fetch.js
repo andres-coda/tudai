@@ -1,4 +1,5 @@
-const rutaBaseApi = 'http://localhost:3030/'
+const rutaBaseApiLocal = 'http://localhost:3030/';
+const rutaBaseApi = 'https://verdulerialistas-bacck.onrender.com/'
 const RUTAAPI = {
   REGISTRO: rutaBaseApi + 'user',
   LOGIN: rutaBaseApi + 'auth/login',

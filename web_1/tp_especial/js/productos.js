@@ -1,23 +1,17 @@
-const leerProductosSesionStorage = () => {
-  const aux = sessionStorage.getItem('productos')
-  const productos = aux ? JSON.parse(aux) : [];
-  return productos;
-}
-
-const editarProductos = (productos) => {
-  let aux = null;
-  if (productos && productos.length > 0) {
-    aux = productos
-  };
-  sessionStorage.setItem('productos', JSON.stringify(aux))
-}
-
 async function mostrarProductos(idProveedor, idRubro) {
+  let url = `${URLRUTAS.PRODUCTOS_FORM}`;
+  if(idProveedor || idRubro){
+    crearBtnAtras();
+  }
+  
+  if(idProveedor){
+    url= `${URLRUTAS.PROVEEDORES_FORM}/${idProveedor}`
+  }
   const tbody = document.querySelector('#tabla tbody');
   titulo().textContent = 'Productos';
   const btn = crearBtnAgregar();
   btn.addEventListener('click', () => {
-    window.location.hash = `${URLRUTAS.PRODUCTOS_FORM}`;
+    window.location.hash = url;
   });
 
   btn.title = 'Nuevo producto';
@@ -45,13 +39,12 @@ async function mostrarProductos(idProveedor, idRubro) {
     if ((!idRubro && !idProveedor)) {
       productos = await productoGet();
     }
-
-    editarProductos(productos);
-
+    
     if (productos.length != 0) {
       productos.map(p => tbody.appendChild(mostrarProductoIndividual(p, idProveedor, idRubro)));
     }
-
+    
+    setSesionStorageSeguro('productos', productos);
 
   } catch (er) {
     console.log(er)
@@ -102,8 +95,8 @@ async function funcionEliminarProducto(id) {
     if (respuesta.error) {
       throw new Error('No se pudo eliminar el producto, ' + respuesta.error);
     }
-    const productos = leerProductosSesionStorage();
-    editarProductos(productos.filter(p => p.id != id));
+    const productos = getSesionStorageSeguro('productos');;
+    setSesionStorageSeguro('productos', productos.filter(p => p.id != id));
 
     const tr = document.querySelector(`#prod-${id}`);
     if (tr) tr.remove();
@@ -114,12 +107,11 @@ async function funcionEliminarProducto(id) {
 
 async function nuevoProducto(id) {
   let producto = null;
-  const productos = leerProductosSesionStorage();
+  const productos = getSesionStorageSeguro('productos');;
   if (id) {
     producto = productos.find(p => p.id == id);
   }
   try {
-    console.log('<<<--- Rubro producto --->>>', producto.rubro)
     const rubros = await rubrosGet();
     const form = crearForm();
     titulo().textContent = 'Nuevo producto';
@@ -152,7 +144,7 @@ const productoDto = () => {
 async function productoFetch(id) {
   const ruta = id ? RUTAAPI.PRODUCTO + '/' + id : RUTAAPI.PRODUCTO;
   const method = id ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
-  const productos = leerProductosSesionStorage();
+  const productos = getSesionStorageSeguro('productos');;
   try {
     const respuesta = await fetchGenerico(
       ruta,
@@ -167,7 +159,7 @@ async function productoFetch(id) {
     } else {
       productos.push(respuesta);
     }
-    editarProductos(productos)
+    setSesionStorageSeguro('productos', productos);
     window.location.hash = `${URLRUTAS.PRODUCTOS}`;
   } catch (er) {
     cargarError(er);

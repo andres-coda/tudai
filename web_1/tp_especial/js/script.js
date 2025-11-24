@@ -117,7 +117,6 @@ const listaVacia = (entidad) => {
 }
 
 const crearBotonera = (funcionAdelante, funcionAtras, btnAdelanteText, btnAtrasText) => {
-  console.log(' funcionAtras ', funcionAtras)
   const guardar = document.createElement('button')
   guardar.classList.add('btn-guardar');
 
@@ -194,6 +193,36 @@ function setLocalStorageSeguro(key, value) {
       localStorage.removeItem(key);
     } else {
       localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (error) {
+    console.error(`Error guardando ${key}:`, error);
+  }
+}
+
+
+function getSesionStorageSeguro(key) {
+  try {
+    const value = sessionStorage.getItem(key);
+    
+    // Validar que no sea string "null" o "undefined"
+    if (!value || value === 'null' || value === 'undefined') {
+      return null;
+    }
+    
+    return JSON.parse(value);
+  } catch (error) {
+    console.error(`Error leyendo ${key}:`, error);
+    sessionStorage.removeItem(key); // Limpiar dato corrupto
+    return null;
+  }
+}
+
+function setSesionStorageSeguro(key, value) {
+  try {
+    if (value === null || value === undefined) {
+      sessionStorage.removeItem(key);
+    } else {
+      sessionStorage.setItem(key, JSON.stringify(value));
     }
   } catch (error) {
     console.error(`Error guardando ${key}:`, error);

@@ -1,26 +1,8 @@
-
-const leerListaSesionStorage = () => {
-  const aux = sessionStorage.getItem('listas')
-  const listas = aux ? JSON.parse(aux) : [];
-  return listas;
-}
-
-const editarLista = (lista) => {
-  let aux = null;
-  if (lista && lista.length > 0) {
-    aux = lista
-  };
-  sessionStorage.setItem('listas', JSON.stringify(aux))
-}
-
-const leerPedidoSesionStorage = () => {
-  const aux = sessionStorage.getItem('pedidoActual')
-  const pedido = aux ? JSON.parse(aux) : null;
-  return pedido;
-}
-
 async function mostrarListas(idProveedor) {
-  let listas = leerListaSesionStorage();
+  if(idProveedor){
+    crearBtnAtras();
+  }
+  let listas = getSesionStorageSeguro('lista');
   const tbody = document.querySelector('#tabla tbody');
   titulo().textContent = 'Pedidos';
   const btn = crearBtnAgregar();
@@ -33,9 +15,9 @@ async function mostrarListas(idProveedor) {
   crearTituloTabla(titulos);
 
   try {
-    if (listas.length == 0) {
+    if (!listas || listas.length == 0) {
       listas = await listaGet();
-      editarLista(listas);
+      setSesionStorageSeguro('lista', listas);
     }
     listas
       .filter(l=> idProveedor ? l.proveedorId === idProveedor : true)
@@ -69,7 +51,7 @@ async function mostrarListas(idProveedor) {
 
 async function funcionEliminarLista(id) {
   try {
-    let listas = leerListaSesionStorage();
+    let listas = getSesionStorageSeguro('lista');
     const respuesta = await fetchGenerico(
       RUTAAPI.LISTA + '/' + id,
       null,
@@ -84,7 +66,7 @@ async function funcionEliminarLista(id) {
     const tr = document.querySelector(`#lista-${id}`);
     if (tr) tr.remove();
 
-    editarLista(listas);
+    setSesionStorageSeguro('lista', listas);
   } catch (er) {
     cargarError(er);
   }
@@ -110,7 +92,7 @@ async function nuevaLista(id) {
 
 async function nuevoPedidoIndividual(id) {
   try {
-    const pedido = leerPedidoSesionStorage();
+    const pedido = getSesionStorageSeguro('pedidoActual');
     let lista = null;
     if(id){
       lista = await listaGet(id);
@@ -186,7 +168,7 @@ const listaPedidoDto = () => {
     };
   });
 
-  const pedido = JSON.parse(sessionStorage.getItem('pedidoActual'));
+  const pedido = getSesionStorageSeguro('pedidoActual');
 
   if (!pedido) throw new Error('No existe pedido');
 
@@ -204,7 +186,7 @@ async function listaFetch(id = null) {
 
   try {
 
-    let listas = leerListaSesionStorage();
+    let listas = getSesionStorageSeguro('lista');
     const respuesta = await fetchGenerico(
       ruta,
       listaPedidoDto(),
@@ -218,12 +200,12 @@ async function listaFetch(id = null) {
     } else {
       listas.push(respuesta);
     }
-    editarLista(listas);
+    setSesionStorageSeguro('lista', listas);
     window.location.hash = `${URLRUTAS.PEDIDO}/${respuesta.id}`;
   } catch (er) {
     cargarError(`${er.message}`);
   } finally {
-    sessionStorage.removeItem('pedidoActual');
+    setSesionStorageSeguro('pedidoActual', null);
   }
 }
 
@@ -304,7 +286,7 @@ async function pasarPedido(pedid) {
       ? { ...pedid, proveedor: pedid.proveedorId}
       : listaDto();
 
-    sessionStorage.setItem('pedidoActual', JSON.stringify(pedido));
+    setSesionStorageSeguro('pedidoActual', pedido);
 
     window.location.hash = `${URLRUTAS.LISTA_PEDIDO}/${pedid?.id ?? ''}`;
   } catch (er) {
@@ -314,6 +296,7 @@ async function pasarPedido(pedid) {
 
 async function mostrarPedidoIndividual(id) {
   try {
+    crearBtnAtras();
     if (!id) throw new Error('Requiere un pedido');
     const pedido = await listaGet(id);
 

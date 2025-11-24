@@ -1,13 +1,13 @@
 :root {
   --font-base: "Nunito", sans-serif;
   --fondo-app: #1e3006;
-  --hover: #5c773e;
+  --hover: #b99a1e;
   --texto: #f3f2ea;
   --texto-secundario: black;
   --fondo-boton: #dbbb3c;
   --fondo-celda: #4c6135;
 }
-body.claro{
+.claro{
   --fondo-app: #f5ebe1;
   --hover: #11461d;
   --texto: black;
@@ -17,69 +17,69 @@ body.claro{
 }
 
 body, button {
-  font-family: var(--fuente-base);
+  font-family: "Roboto", sans-serif;
 }
 
 
-body {
+body{
   background-color: var(--fondo-app);
   color: var(--texto);
 }
 
-body nav,
-body #menu {
+nav,
+#menu {
   background-color: var(--fondo-boton);
   color: var(--fondo-app);
 }
 
-body a:hover,
-body a:focus {
+a:hover,
+a:focus {
   background-color: var(--hover);
   color: var(--texto);
 }
 
-body a:active {
+a:active {
   background-color: var(--hover);
   color: var(--texto-secundario);
 }
 
-body .clickeable:hover {
+.clickeable:hover {
   color: var(--texto-secundario);
 }
 
-body table thead th {
+table thead th {
   background-color: var(--fondo-celda);
 }
 
-body table td {
+table td {
   background-color: var(--fondo-celda);
 }
 
 
 
-body button,
-body .btn-guardar,
-body .btn-agregar {
+button,
+.btn-guardar,
+.btn-agregar {
   background-color: var(--fondo-boton);
   color: var(--fondo-app);
 }
 
-body button:active,
-body .btn-guardar:active,
-body .btn-agregar:active {
+button:active,
+.btn-guardar:active,
+.btn-agregar:active {
   background-color: var(--hover);
 }
 
-body #menu-hamburguesa {
+#menu-hamburguesa {
   background-color: var(--fondo-boton);
 }
 
-body #menu-hamburguesa svg {
+#menu-hamburguesa svg {
   color: var(--texto);
 }
 
-body .btn-atras,
-body .btn-icono {
+.btn-atras,
+.btn-icono {
   background-color: transparent;
   color: var(--hover);
   border: none;
@@ -89,22 +89,26 @@ body .btn-icono {
   box-shadow: 1px 1px 1px var(--texto-secundario);
 }
 
-body .ul-checkbox {
+.ul-checkbox {
   color: var(--texto-secundario);
+}
+
+li:not(#menu li){
+  background-color: var(--fondo-celda);
 }
 
 @media(width <=700px) {
 
-  body nav {
+  nav {
     background-color: var(--fondo-app);
     color: var(--texto);
   }
 
-  body #menu-hamburguesa {
+  #menu-hamburguesa {
     background-color: var(--fondo-app);
   }
 
-  body #menu-hamburguesa svg {
+  #menu-hamburguesa svg {
     color: var(--texto);
   }
 }

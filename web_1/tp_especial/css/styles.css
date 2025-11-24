@@ -30,9 +30,9 @@ footer{
 
 #contenedor {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
   flex: 1;
   gap:1rem;
   width: 100%;
@@ -124,6 +124,7 @@ li {
   width: 100%;
   box-sizing: border-box;
   border-radius: 5px;
+  font-size: 1.5em;
   padding: .2rem .5rem;
   position: relative;
   text-align: center;
@@ -235,6 +236,15 @@ button:hover,
   border-radius: 10px;
   margin: 1rem;
   box-sizing: border-box;
+  max-width: 600px;
+}
+
+.inicio{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  height: 67vh;
 }
 
 .div-img {
@@ -253,7 +263,6 @@ button:hover,
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 75vh;
 }
 
 img {
@@ -359,8 +368,8 @@ table td {
 .card{
   display: flex;
   flex-direction: row;
-  width: 100%;
-  max-width: 300px;
+  flex: 1;
+  max-width: 400px;
   border-radius: 20px;
   background-color: var(--fondo-celda);
   padding: .5rem;
