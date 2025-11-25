@@ -135,9 +135,6 @@ async function registroFetch() {
 	const url = user ? `${RUTAAPI.REGISTRO}/${user.id}` : RUTAAPI.REGISTRO;
 	const metodo = user ? METODOS_FETCH.PUT : METODOS_FETCH.POST;
 	const dto = registroDto();
-	console.log('dto --->>', dto);
-	console.log('url --->>', url);
-	console.log('metodo --->>', metodo);
 	try {
 		const respuesta = await fetchGenerico(
 			url,
@@ -145,12 +142,10 @@ async function registroFetch() {
 			metodo,
 			profileAdaptador
 		);
-		logout();
-
+		
 		if (!respuesta) throw new Error('Error al intentar logearse');
-
-		await perfilFetch();
-		window.location.hash = `${URLRUTAS.PERFIL}`;
+		
+		await login();
 	} catch (er) {
 		cargarError(`${er.message}`);
 	}
